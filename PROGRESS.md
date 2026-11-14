@@ -145,7 +145,7 @@ requirement/
 | 3.9 | Audit aksesibilitas (keyboard, kontras, aria) | 🟡 | Situs publik + panel admin sudah diaudit dengan skrip terukur; audit penuh (Lighthouse/axe) belum |
 | 3.10 | **Tema panel admin sesuai brand Rinjan** | ✅ | `src/app/(payload)/custom.css`. Detail: `doc/design-admin.md` |
 | 3.11 | Sidebar biru + tema gelap default | ✅ | Gradien `#006dbc`→`#0060a5`, shell kartu rounded, item aktif berlatar putih. `doc/adr-003-sidebar-biru-tema-gelap.md` |
-| 3.12 | Kartu statistik dashboard (angka dari DB) | ⬜ | Butuh komponen `beforeDashboard` + regenerasi import map. Dijadwalkan setelah 3.11 stabil |
+| 3.12 | Kartu statistik dashboard (angka dari DB) | ✅ | Komponen `AdminStats` via `beforeDashboard`; import map 26→27 entri. Angka diverifikasi sama dengan `/api/*` |
 
 ### Hasil kerja 3.10: tema panel admin
 
@@ -285,6 +285,8 @@ Cacat bawaan Payload yang ditemukan dan diperbaiki:
 | 14 Nov 2026 | Deviasi sadar: gradien dibalik ke lebih gelap. Campur putih 15% seperti referensi membuat teks putih hanya 4.08:1 (gagal AA) |
 | 14 Nov 2026 | Diperbaiki: latar item nav aktif hanya setinggi teks karena `.nav__link:has(.nav__link-indicator){padding-left:0}` bawaan Payload. Diverifikasi lewat `CSS.getMatchedStylesForNode` |
 | 14 Nov 2026 | `referensi-desain-admin/` dikecualikan dari ESLint, tsconfig, dan build karena memakai dependency yang tidak terpasang |
+| 14 Nov 2026 | **Kartu statistik dashboard (3.12):** komponen server `AdminStats` lewat `beforeDashboard`. Angka dari Local API: 4 layanan, 11 redirect, 0 media. Diverifikasi sama dengan `/api/*` |
+| 14 Nov 2026 | Import map di-regenerate 26 → 27 entri (prosedur ADR-002); rute sementara dihapus setelah dipakai |
 
 ---
 

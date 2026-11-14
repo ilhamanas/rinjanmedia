@@ -355,7 +355,30 @@ Cookie hanya ditulis bila belum ada, jadi pilihan pengguna tidak pernah ditimpa.
 
 ---
 
-## 11. Batasan yang Diketahui
+## 11. Ringkasan Statistik Dashboard
+
+Dashboard diawali kartu ringkasan dari komponen server `AdminStats` (`beforeDashboard`).
+
+| Kartu | Sumber | Filter |
+|---|---|---|
+| Layanan terbit | koleksi `services` | `status = published` |
+| Lead baru | koleksi `leads` | `status = baru` |
+| Redirect aktif | koleksi `redirects` | `enabled = true` |
+| Media | koleksi `media` | semua |
+
+Angka diambil lewat Local API (`payload.count`), bukan dikarang, dan bukan fetch dari browser. Komponennya Server Component sehingga tidak menambah bundle client.
+
+Setiap kartu menaut ke koleksinya, jadi angka bisa langsung ditindaklanjuti. `safeCount` mengembalikan 0 bila satu hitungan gagal, supaya dashboard tidak ikut rusak hanya karena satu query error.
+
+Verifikasi (`.verify/admin-stats-test.mjs`) membandingkan angka kartu dengan `/api/<koleksi>`: 4 layanan, 11 redirect, 0 media, dan semuanya cocok.
+
+### Catatan regenerasi import map
+
+Menambah `beforeDashboard` mengubah import map: 26 menjadi **27 entri**. Prosedurnya sesuai ADR-002 (rute sementara, panggil, hapus). Tanpa regenerasi, dashboard tampil kosong dengan error `PayloadComponent not found in importMap`.
+
+---
+
+## 12. Batasan yang Diketahui
 | Batasan | Sebab | Dampak |
 |---|---|---|
 | `--theme-success-500` tidak bisa dipakai untuk teks di mode gelap | Tidak ada di tabel flip Payload | Harus memakai `--theme-success-600` |
@@ -365,5 +388,5 @@ Cookie hanya ditulis bila belum ada, jadi pilihan pengguna tidak pernah ditimpa.
 | Indikator nav aktif hanya muncul di halaman koleksi | Dashboard tidak punya link aktif | Uji indikator harus di `/admin/collections/*`, bukan `/admin` |
 | Pilihan tema ada di `/admin/account`, bukan tombol header | Desain bawaan Payload | Untuk menguji toggle, buka halaman akun |
 | Sidebar belum punya ikon per item | Payload tidak punya field `icon` per koleksi, hanya chevron grup | Perlu komponen `Nav` kustom; risiko regresi keyboard tinggi |
-| Belum ada welcome card dan search di topbar | Butuh komponen `beforeDashboard` + regenerasi import map | Dijadwalkan sebagai 3.12 |
+| Belum ada kotak pencarian di topbar | Butuh endpoint pencarian lintas koleksi | Fitur baru, di luar lingkup restyle |
 | Folder `referensi-desain-admin/` dikecualikan dari lint, typecheck, dan build | Kode referensi memakai dependency yang tidak terpasang dan gagal strict TS | Jangan dihapus dari `exclude` selama folder itu ada |

@@ -459,6 +459,93 @@
     stroke: var(--rinjan-nav-bg);
   }
 
+  /* --- Ringkasan statistik (komponen beforeDashboard) ----------------------
+     Kartu angka diambil dari database lewat komponen server. Gaya di sini
+     memakai token yang sama dengan sidebar supaya terasa satu keluarga. */
+  .rinjan-stats {
+    margin-bottom: 24px;
+  }
+
+  .rinjan-stats__head {
+    margin-bottom: 16px;
+  }
+
+  .rinjan-stats__title {
+    margin: 0 0 6px;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--theme-elevation-1000);
+  }
+
+  .rinjan-stats__sub {
+    margin: 0;
+    font-size: 14px;
+    color: var(--theme-elevation-500);
+  }
+
+  .rinjan-stats__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (max-width: 1024px) {
+    .rinjan-stats__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 600px) {
+    .rinjan-stats__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .rinjan-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    height: 100%;
+    padding: 20px;
+    border-radius: 16px;
+    background-color: var(--theme-elevation-0);
+    border: 1px solid var(--theme-elevation-150);
+    text-decoration: none;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .rinjan-stat:hover {
+    border-color: var(--rinjan-accent);
+    background-color: var(--theme-elevation-50);
+  }
+
+  .rinjan-stat:focus-visible {
+    outline: 2px solid var(--theme-success-600);
+    outline-offset: 2px;
+  }
+
+  .rinjan-stat__value {
+    font-size: 34px;
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--theme-elevation-1000);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .rinjan-stat__label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--theme-elevation-800);
+  }
+
+  .rinjan-stat__hint {
+    font-size: 12px;
+    color: var(--theme-elevation-500);
+  }
+
   /* --- Logo dan ikon brand -------------------------------------------------
      Aturan tema ditulis dengan specificity setara (html[data-theme] + kelas).
      Kalau hanya `.rinjan-logo--dark { display: none }`, aturan itu akan

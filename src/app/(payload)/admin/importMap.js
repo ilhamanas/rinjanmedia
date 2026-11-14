@@ -23,6 +23,7 @@ import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { BrandIcon as BrandIcon_d0588eb7948ddcaab14f9f6ea2cd1dd7 } from '../../../components/admin/BrandIcon'
 import { BrandLogo as BrandLogo_9bb8ea9971948830b3de812baaa56aec } from '../../../components/admin/BrandLogo'
+import { AdminStats as AdminStats_16a7bcef43b66e38bfd8da07e8178ff7 } from '../../../components/admin/AdminStats'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 /** @type import('payload').ImportMap */
@@ -52,5 +53,6 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "/components/admin/BrandIcon#BrandIcon": BrandIcon_d0588eb7948ddcaab14f9f6ea2cd1dd7,
   "/components/admin/BrandLogo#BrandLogo": BrandLogo_9bb8ea9971948830b3de812baaa56aec,
+  "/components/admin/AdminStats#AdminStats": AdminStats_16a7bcef43b66e38bfd8da07e8178ff7,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }
