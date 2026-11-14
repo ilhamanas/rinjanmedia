@@ -378,7 +378,54 @@ Menambah `beforeDashboard` mengubah import map: 26 menjadi **27 entri**. Prosedu
 
 ---
 
-## 12. Batasan yang Diketahui
+## 12. Navigasi Kustom (`admin.components.Nav`)
+
+Sidebar diganti komponen sendiri (`src/components/admin/BrandNav.tsx` + `NavShellClient.tsx`) supaya bisa memuat ikon per koleksi dan kotak identitas. Ini satu-satunya bagian panel yang **bukan** CSS-only.
+
+### Yang dipakai ulang, bukan ditulis ulang
+
+Perilaku keyboard tidak ditulis dari nol. Semuanya memakai kode Payload:
+
+| Kebutuhan | Sumber |
+|---|---|
+| `navOpen` / `setNavOpen` | `useNav()` dari NavProvider yang dipasang `Root` |
+| `inert` saat nav tertutup | `<aside inert={!navOpen}>` meniru `NavWrapper` |
+| `tabIndex -1` saat tertutup | sama seperti `DefaultNavClient` |
+| Navigasi client-side | `<Link>` dari `@payloadcms/ui` |
+| Pengelompokan menu + label | `groupNavItems` dari `@payloadcms/ui/shared` |
+| Slot `beforeNav` dkk | `RenderServerComponent` |
+| Tombol logout | `Logout` dari `@payloadcms/ui` |
+
+### Risiko yang diuji, bukan diasumsikan
+
+| Risiko | Uji | Hasil |
+|---|---|---|
+| Deteksi item aktif dobel | 9 rute, hitung `.rinjan-nav__link--active` | tepat 1 per halaman, 0 di dashboard |
+| Tab masuk menu tersembunyi | 20 langkah Tab di viewport 900px | **0/20** masuk; `.focus()` paksa juga ditolak |
+| Tombol ciutkan tidak bekerja | klik + baca kelas `nav--nav-open` | berubah true -> false |
+
+Aturan aktif **wajib** meniru Payload apa adanya:
+
+```ts
+pathname.startsWith(href) && ['/', undefined].includes(pathname[href.length])
+```
+
+Kalau hanya memakai `startsWith`, beberapa item aktif sekaligus (mis. `/admin/collections/services` vs `/admin/collections/services-x`) dan semuanya akan mendapat pil putih.
+
+### Catatan implementasi
+
+- `req` tidak dideklarasikan pada tipe `ServerProps`, padahal ada saat runtime. Dibaca lewat `BrandNavProps = ServerProps & { req?: Partial<PayloadRequest> }`.
+- `admin.routes` berisi rute relatif (account, login, dst). Rute admin ada di `payload.config.routes.admin`.
+- `visibleEntities` bisa `undefined`; dipakai fallback ke seluruh koleksi.
+- Import map bertambah menjadi **28 entri** setelah `Nav` kustom. Wajib regenerasi setiap kali komponen ini berubah.
+
+### Deviasi dari referensi
+
+Referensi menaruh ikon di dalam kotak berwarna dan memakai daftar menu statis (Home, Messages, Statistics). Sidebar kita mengikuti struktur koleksi Payload, jadi ikon dipetakan per slug koleksi, dan grup menu tetap dinamis dari konfigurasi.
+
+---
+
+## 13. Batasan yang Diketahui
 | Batasan | Sebab | Dampak |
 |---|---|---|
 | `--theme-success-500` tidak bisa dipakai untuk teks di mode gelap | Tidak ada di tabel flip Payload | Harus memakai `--theme-success-600` |
@@ -387,6 +434,5 @@ Menambah `beforeDashboard` mengubah import map: 26 menjadi **27 entri**. Prosedu
 | Field tampak abu-abu sebelum hidrasi | Payload menonaktifkan field sampai izin selesai dimuat | Bukan bug; screenshot harus menunggu `!input.disabled && !input.readOnly` |
 | Indikator nav aktif hanya muncul di halaman koleksi | Dashboard tidak punya link aktif | Uji indikator harus di `/admin/collections/*`, bukan `/admin` |
 | Pilihan tema ada di `/admin/account`, bukan tombol header | Desain bawaan Payload | Untuk menguji toggle, buka halaman akun |
-| Sidebar belum punya ikon per item | Payload tidak punya field `icon` per koleksi, hanya chevron grup | Perlu komponen `Nav` kustom; risiko regresi keyboard tinggi |
-| Belum ada kotak pencarian di topbar | Butuh endpoint pencarian lintas koleksi | Fitur baru, di luar lingkup restyle |
+| Sidebar memakai ikon dari peta slug, bukan menu statis | Struktur menu mengikuti koleksi Payload | Menambah koleksi baru berarti menambah ikon di `NavShellClient` || Belum ada kotak pencarian di topbar | Butuh endpoint pencarian lintas koleksi | Fitur baru, di luar lingkup restyle |
 | Folder `referensi-desain-admin/` dikecualikan dari lint, typecheck, dan build | Kode referensi memakai dependency yang tidak terpasang dan gagal strict TS | Jangan dihapus dari `exclude` selama folder itu ada |

@@ -290,15 +290,14 @@
   }
 
   /* --- Navigasi -----------------------------------------------------------
-     Sidebar biru terang mengambang seperti referensi dashboard. Konsekuensi
-     yang wajib ditangani bersamaan:
+     Sidebar memakai markup sendiri (komponen BrandNav), jadi aturan di sini
+     menarget kelas Rinjan, bukan kelas internal Payload.
 
-     1. `.nav__link-indicator` bawaan biru hanya 1.5:1 di atas sidebar biru,
-        jadi praktis hilang. Diganti putih.
-     2. Cincin fokus global #6398cf hanya 2.5:1 di atas sidebar, gagal ambang
-        3:1 untuk indikator non-teks. Di dalam sidebar cincinnya dibuat putih.
-     3. Teks nav dan label grup harus putih, bukan warna elevation yang
-        dirancang untuk latar terang. */
+     Tiga hal yang wajib dijaga bersamaan:
+     1. Latar item aktif PUTIH dengan teks biru #006dbc (5.37:1).
+     2. Cincin fokus PUTIH: cincin biru hanya ~2.5:1 di atas sidebar biru dan
+        gagal ambang 3:1 untuk indikator non-teks.
+     3. Ikon memakai currentColor, sehingga otomatis ikut biru saat item aktif. */
   .nav {
     background: linear-gradient(
       to bottom,
@@ -306,56 +305,158 @@
       var(--rinjan-nav-bg-end)
     );
     border-right-color: transparent;
-    /* Sidebar mengambang: radius hanya di kiri, mengikuti referensi. */
-    margin: 0;
-    height: 100%;
     border-top-left-radius: 24px;
     border-bottom-left-radius: 24px;
     overflow: hidden;
   }
 
-  /* Tombol "ciutkan" di pojok kanan atas sidebar, seperti referensi. */
-  .template-default__nav-toggler-wrapper {
-    justify-content: flex-end;
-    padding-right: 12px;
-  }
-
-  .nav a.nav__link,
-  .nav__label,
-  .nav-group__toggle {
+  .rinjan-nav__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 16px 14px;
     color: var(--rinjan-nav-text);
   }
 
-  /* Referensi memakai item nav yang lega dengan sasaran klik besar. Bawaan
-     Payload hanya padding-block 2.5px sehingga terasa sesak.
-     Padding ditulis satu per satu DAN dengan selektor `:has()` yang sama seperti
-     Payload: `.nav__link:has(.nav__link-indicator){padding-left:0}` bawaan
-     menang atas `.nav a.nav__link`, sehingga latar item aktif jadi setinggi
-     teks saja. */
-  .nav a.nav__link,
-  .nav__link:has(.nav__link-indicator) {
-    padding-top: 9px;
-    padding-bottom: 9px;
-    padding-left: 12px;
-    padding-right: 12px;
+  .rinjan-nav__brand-mark {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
     border-radius: 12px;
-    line-height: 22px;
+    background-color: rgb(255 255 255 / 20%);
+    font-weight: 700;
     font-size: 15px;
+    flex-shrink: 0;
   }
 
-  .nav-group__toggle {
-    padding-block: 6px;
-    padding-inline: 12px;
-    border-radius: 10px;
-    margin-bottom: 2px;
+  .rinjan-nav__brand-name {
+    font-size: 14px;
+    font-weight: 600;
+    flex-grow: 1;
+    white-space: nowrap;
   }
 
-  .nav__label {
-    font-size: 12px;
-    letter-spacing: 0.04em;
+  .rinjan-nav__collapse {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 8px;
+    background-color: rgb(255 255 255 / 20%);
+    color: var(--rinjan-nav-text);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .rinjan-nav__collapse:hover {
+    background-color: rgb(255 255 255 / 32%);
+  }
+
+  .rinjan-nav__collapse:focus-visible {
+    outline: 2px solid var(--rinjan-nav-indicator);
+    outline-offset: 2px;
+  }
+
+  .rinjan-nav__group {
+    margin-bottom: 6px;
+  }
+
+  .rinjan-nav__group-label {
+    margin: 14px 0 6px;
+    padding-inline: 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    opacity: 0.75;
-    padding-inline: 12px;
+    color: var(--rinjan-nav-text-muted);
+  }
+
+  .rinjan-nav__list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0;
+    padding: 0 10px;
+    list-style: none;
+  }
+
+  .rinjan-nav__link {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    color: var(--rinjan-nav-text);
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .rinjan-nav__link:hover {
+    background-color: var(--rinjan-nav-bg-hover);
+    text-decoration: none;
+  }
+
+  .rinjan-nav__link:focus-visible {
+    outline: 2px solid var(--rinjan-nav-indicator);
+    outline-offset: 2px;
+  }
+
+  /* Ikon mengikuti warna teks, jadi otomatis biru saat item aktif. */
+  .rinjan-nav__icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  /* Item aktif: pil putih penuh, teks dan ikon biru. */
+  .rinjan-nav__link--active {
+    background-color: #ffffff;
+    color: var(--rinjan-nav-bg);
+    font-weight: 600;
+  }
+
+  .rinjan-nav__link--active:hover {
+    background-color: #ffffff;
+  }
+
+  .rinjan-nav__controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: auto;
+    padding: 12px 16px 18px;
+    color: var(--rinjan-nav-text);
+  }
+
+  /* Tombol/logout di dalam sidebar memakai warna teks global. Tanpa ini
+     ikonnya tetap #272727 di tema terang dan tidak terlihat di atas biru. */
+  .rinjan-nav__controls a,
+  .rinjan-nav__controls button,
+  .rinjan-nav__controls .stroke,
+  .rinjan-nav__controls svg {
+    color: var(--rinjan-nav-text);
+    stroke: var(--rinjan-nav-text);
+  }
+
+  .rinjan-nav__controls a:focus-visible,
+  .rinjan-nav__controls button:focus-visible {
+    outline: 2px solid var(--rinjan-nav-indicator);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  /* Payload merender NavGroup dengan tombol sendiri; warnanya disamakan
+     dengan sidebar. */
+  .nav-group__toggle {
+    color: var(--rinjan-nav-text-muted);
+    padding-inline: 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
 
   .nav-group__toggle:hover,
@@ -363,100 +464,15 @@
     color: var(--rinjan-nav-text);
   }
 
-  .nav-group__toggle:hover .stroke,
-  .nav-group__toggle:focus-visible .stroke {
-    stroke: var(--rinjan-nav-text);
+  .nav-group__toggle .stroke,
+  .nav-group__indicator .stroke {
+    stroke: var(--rinjan-nav-text-muted);
   }
 
-  /* Payload mematikan outline pada toggle grup nav dan hanya mengandalkan
-     perubahan warna. Warna saja bukan indikator fokus yang cukup (WCAG 2.4.11
-     dan R-32), jadi cincin fokus dikembalikan. Putih, karena cincin biru tidak
-     terlihat di atas sidebar biru. */
-  .nav-group__toggle:focus-visible,
-  .nav a.nav__link:focus-visible {
+  .nav-group__toggle:focus-visible {
     outline: 2px solid var(--rinjan-nav-indicator);
     outline-offset: 2px;
     border-radius: 4px;
-  }
-
-  /* Elemen sidebar yang memakai warna teks global, bukan warna nav. Tanpa ini
-     tombol ciutkan dan ikon logout tetap #272727 (tema terang) di atas sidebar
-     biru, sehingga praktis tidak terlihat. */
-  .nav-toggler,
-  .nav-toggler .stroke,
-  .nav__controls a,
-  .nav__controls button,
-  .nav__controls .stroke,
-  .nav-group__indicator,
-  .nav-group__indicator .stroke,
-  .nav-group__toggle .stroke {
-    color: var(--rinjan-nav-text);
-    stroke: var(--rinjan-nav-text);
-  }
-
-  .nav-toggler:hover,
-  .nav__controls a:hover,
-  .nav__controls button:hover,
-  .nav-group__toggle:hover .stroke {
-    color: var(--rinjan-nav-text);
-    stroke: var(--rinjan-nav-text);
-  }
-
-  /* Chevron grup nav: bawaan memakai elevation-1000/400 yang nyaris tak terlihat
-     di atas biru. */
-  .nav-group__toggle svg,
-  .nav-group__indicator svg {
-    color: var(--rinjan-nav-text);
-  }
-
-  /* Tombol hamburger (ciutkan nav) memakai --theme-bg, sehingga di tema terang
-     tampil sebagai kotak putih solid di atas sidebar biru. Selain itu Payload
-     menulis `.hamburger:focus { outline: none }` sehingga tidak ada indikator
-     fokus sama sekali. */
-  .hamburger {
-    background-color: transparent;
-    color: var(--rinjan-nav-text);
-    box-shadow: 0 0 0 1px rgb(255 255 255 / 45%);
-    border-radius: 6px;
-  }
-
-  .hamburger:hover {
-    background-color: var(--rinjan-nav-bg-hover);
-    box-shadow: 0 0 0 1px var(--rinjan-nav-text);
-  }
-
-  .hamburger:focus-visible {
-    outline: 2px solid var(--rinjan-nav-indicator);
-    outline-offset: 2px;
-  }
-
-  /* Hover pada link nav: latar lebih gelap, bukan garis bawah. Payload memakai
-     text-decoration underline yang di atas sidebar biru sulit dibaca. */
-  .nav a.nav__link:hover {
-    text-decoration: none;
-    background-color: var(--rinjan-nav-bg-hover);
-    border-radius: 10px;
-  }
-
-  .nav__link-indicator {
-    /* Referensi tidak memakai garis penanda; status aktif ditandai latar putih
-       penuh. Indikator disembunyikan, bukan dihapus dari DOM, karena Payload
-       memakainya sebagai penanda link aktif. */
-    display: none;
-  }
-
-  /* Item nav aktif: latar putih penuh dengan teks dan ikon biru, seperti
-     referensi. Teks biru di atas putih = 5.37:1. */
-  .nav__link:has(.nav__link-indicator),
-  html[data-theme='dark'] .nav__link:has(.nav__link-indicator) {
-    background-color: #ffffff;
-    color: var(--rinjan-nav-bg);
-    border-radius: 12px;
-    font-weight: 600;
-  }
-
-  .nav__link:has(.nav__link-indicator) .stroke {
-    stroke: var(--rinjan-nav-bg);
   }
 
   /* --- Ringkasan statistik (komponen beforeDashboard) ----------------------

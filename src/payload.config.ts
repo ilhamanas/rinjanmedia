@@ -30,6 +30,7 @@ export default buildConfig({
       icons: [{ rel: 'icon', type: 'image/png', url: '/icon-rinjan.png' }],
     },
     components: {
+      Nav: '/components/admin/BrandNav#BrandNav',
       beforeDashboard: ['/components/admin/AdminStats#AdminStats'],
       graphics: {
         Logo: '/components/admin/BrandLogo#BrandLogo',
