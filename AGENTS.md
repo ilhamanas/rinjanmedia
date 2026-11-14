@@ -270,6 +270,26 @@ Melewati hook (hanya bila benar-benar perlu, mis. commit dokumentasi saat DB mat
 git commit --no-verify
 ```
 
+### 9.4 Remote & Kunci SSH
+
+Remote `origin`: `git@github.com:ilhamanas/rinjanmedia.git`
+
+Autentikasi memakai kunci khusus repo ini, diatur **lokal** (bukan global) supaya tidak mengganggu repo lain di mesin yang sama:
+
+```powershell
+git config core.sshCommand 'ssh -i C:/ssh-keys/rinjanmedia -o IdentitiesOnly=yes'
+```
+
+Kunci privat **wajib** berizin ketat di Windows. Bila `ssh` menolak dengan `Bad permissions`, perbaiki dengan:
+
+```powershell
+icacls "C:\ssh-keys\rinjanmedia" /inheritance:r /grant:r "$env:USERDOMAIN\$env:USERNAME:F"
+```
+
+Tanpa langkah itu, `BUILTIN\Users` dan `Authenticated Users` masih bisa membaca kunci privat.
+
+Kunci **jangan** disimpan di dalam folder repo. `.gitignore` sudah memblokir `rinjanmedia`, `*.pem`, `*.key`, `id_ed25519`, tetapi mencegah lebih baik daripada mengandalkan ignore.
+
 > **`npm`, bukan `pnpm`.** `pnpm` gagal di mesin ini (install script diblokir, `corepack enable` EPERM). Semua contoh `pnpm` di dokumen ini harus dijalankan sebagai `npm`.
 
 ---
