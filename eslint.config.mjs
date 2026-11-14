@@ -11,6 +11,8 @@ const config = [
       'media/**',
       'next-env.d.ts',
       'src/app/(payload)/admin/importMap.js',
+      // Kode sumber referensi desain, bukan bagian aplikasi.
+      'referensi-desain-admin/**',
     ],
   },
   ...next,

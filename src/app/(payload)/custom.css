@@ -115,6 +115,12 @@
     --rinjan-nav-text-muted: #e8f4fd;
     --rinjan-nav-indicator: #ffffff;
 
+    /* Gradien sidebar. Referensi mencampur brand dengan PUTIH 15% ke bawah,
+       tetapi itu menaikkan luminansi sampai teks putih tinggal 4.08:1 (gagal).
+       Diukur: campur putih 10% = 4.45:1, 15% = 4.08:1, 20% = 3.74:1. Jadi arah
+       gradien dibalik ke lebih GELAP: #006dbc -> #0060a5 (putih 5.37 -> 6.53). */
+    --rinjan-nav-bg-end: #0060a5;
+
     /* Kanvas gelap mengikuti referensi: lebih pekat daripada sebelumnya. */
     --rinjan-canvas: #0a0a0a;
     --rinjan-surface: #161616;
@@ -258,6 +264,31 @@
     box-shadow: 0 0 0 2px var(--theme-success-600);
   }
 
+  /* --- Shell ---------------------------------------------------------------
+     Referensi membungkus seluruh app dalam satu kartu rounded-3xl dengan jarak
+     dari tepi jendela, dan area kerja memakai latar muted yang berbeda dari
+     kartu. Bawaan Payload menempelkan semuanya ke tepi. */
+  .template-default {
+    margin: 20px 16px;
+    height: calc(100vh - 40px);
+    border-radius: 24px;
+    overflow: hidden;
+    background-color: var(--theme-elevation-0);
+  }
+
+  .template-default__wrap {
+    background-color: var(--theme-elevation-50);
+    border-top-right-radius: 24px;
+    border-bottom-right-radius: 24px;
+    overflow: hidden;
+  }
+
+  /* Topbar lengket seperti referensi: latar permukaan + garis bawah tipis. */
+  .app-header {
+    background-color: var(--theme-elevation-0);
+    border-bottom: 1px solid var(--theme-elevation-150);
+  }
+
   /* --- Navigasi -----------------------------------------------------------
      Sidebar biru terang mengambang seperti referensi dashboard. Konsekuensi
      yang wajib ditangani bersamaan:
@@ -269,12 +300,17 @@
      3. Teks nav dan label grup harus putih, bukan warna elevation yang
         dirancang untuk latar terang. */
   .nav {
-    background-color: var(--rinjan-nav-bg);
+    background: linear-gradient(
+      to bottom,
+      var(--rinjan-nav-bg),
+      var(--rinjan-nav-bg-end)
+    );
     border-right-color: transparent;
-    /* Sidebar mengambang: radius di dalam, dengan jarak dari tepi jendela. */
-    margin: 12px 0 12px 12px;
-    height: calc(100vh - 24px);
-    border-radius: 24px;
+    /* Sidebar mengambang: radius hanya di kiri, mengikuti referensi. */
+    margin: 0;
+    height: 100%;
+    border-top-left-radius: 24px;
+    border-bottom-left-radius: 24px;
     overflow: hidden;
   }
 
@@ -291,11 +327,18 @@
   }
 
   /* Referensi memakai item nav yang lega dengan sasaran klik besar. Bawaan
-     Payload hanya padding-block 2.5px sehingga terasa sesak. */
-  .nav a.nav__link {
-    padding-block: 9px;
-    padding-inline: 12px;
-    border-radius: 10px;
+     Payload hanya padding-block 2.5px sehingga terasa sesak.
+     Padding ditulis satu per satu DAN dengan selektor `:has()` yang sama seperti
+     Payload: `.nav__link:has(.nav__link-indicator){padding-left:0}` bawaan
+     menang atas `.nav a.nav__link`, sehingga latar item aktif jadi setinggi
+     teks saja. */
+  .nav a.nav__link,
+  .nav__link:has(.nav__link-indicator) {
+    padding-top: 9px;
+    padding-bottom: 9px;
+    padding-left: 12px;
+    padding-right: 12px;
+    border-radius: 12px;
     line-height: 22px;
     font-size: 15px;
   }
@@ -396,18 +439,24 @@
   }
 
   .nav__link-indicator {
-    background: var(--rinjan-nav-indicator);
-    width: 3px;
-    inset-inline-start: 0;
-    height: 22px;
-    border-radius: 3px;
+    /* Referensi tidak memakai garis penanda; status aktif ditandai latar putih
+       penuh. Indikator disembunyikan, bukan dihapus dari DOM, karena Payload
+       memakainya sebagai penanda link aktif. */
+    display: none;
   }
 
-  /* Link aktif: putih penuh. Token success tidak dipakai lagi di sini karena
-     semuanya biru dan tidak terbaca di atas sidebar biru. */
+  /* Item nav aktif: latar putih penuh dengan teks dan ikon biru, seperti
+     referensi. Teks biru di atas putih = 5.37:1. */
   .nav__link:has(.nav__link-indicator),
   html[data-theme='dark'] .nav__link:has(.nav__link-indicator) {
-    color: var(--rinjan-nav-text);
+    background-color: #ffffff;
+    color: var(--rinjan-nav-bg);
+    border-radius: 12px;
+    font-weight: 600;
+  }
+
+  .nav__link:has(.nav__link-indicator) .stroke {
+    stroke: var(--rinjan-nav-bg);
   }
 
   /* --- Logo dan ikon brand -------------------------------------------------
@@ -447,6 +496,7 @@
     border-radius: 16px;
     background-color: var(--rinjan-surface);
     border-color: var(--rinjan-border);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 24%);
   }
 
   html[data-theme='light'] .card {

@@ -296,11 +296,37 @@ Jadi permukaan memakai `#006dbc` dan aksen teks memakai `#0099eb`.
 
 | Elemen | Nilai | Alasan |
 |---|---|---|
-| Sidebar | `margin: 12px`, `border-radius: 24px` | Mengambang seperti referensi |
-| Item nav | padding `9px 12px`, radius 10px, font 15px | Bawaan Payload hanya `padding-block: 2.5px`, terasa sesak |
+| Shell | `margin: 20px 16px`, `border-radius: 24px`, `height: calc(100vh - 40px)` | Referensi membungkus seluruh app dalam satu kartu mengambang |
+| Sidebar | Gradien `#006dbc` ke `#0060a5`, radius **hanya kiri** | Mengikuti `rounded-l-3xl` referensi |
+| Area kerja | `--theme-elevation-50` | Referensi memakai latar muted, bukan latar kanvas |
+| Topbar | Latar permukaan + garis bawah | Lengket seperti referensi |
+| Item nav | padding `9px 12px`, radius 12px, font 15px | Bawaan Payload hanya `padding-block: 2.5px` |
+| Item nav **aktif** | **Latar putih penuh**, teks biru `#006dbc` (5.37:1) | Referensi menandai aktif dengan latar putih, bukan garis |
 | Label grup | 12px, uppercase, tracking `0.04em` | Membedakan tingkat hierarki |
-| Kartu | radius 16px, `#161616` | Mengikuti referensi |
+| Kartu | radius 16px, `#161616`, `box-shadow 0 1px 2px` | Referensi memakai `ring-1` + `shadow-sm` |
 | Tombol | radius 12px | Tetap di bawah 18px agar tidak jadi pil (R-11) |
+
+### Deviasi dari referensi: arah gradien
+
+Referensi memakai `linear-gradient(to bottom, brand, brand-2)` dengan `brand-2` = brand dicampur **putih 15%**. Itu menaikkan luminansi sampai teks putih gagal:
+
+| Campuran putih | Hasil | Putih di atasnya |
+|---|---|---|
+| 10% | `#1a7cc3` | 4.45:1 gagal |
+| 15% (asli referensi) | `#2683c6` | 4.08:1 gagal |
+| 20% | `#338ac9` | 3.74:1 gagal |
+
+Karena itu arah gradien dibalik ke **lebih gelap**: `#006dbc` (5.37:1) ke `#0060a5` (6.53:1). Secara visual tetap gradien biru, tetapi kontrasnya menguat ke bawah, bukan melemah.
+
+### Jebakan padding yang sempat membuat item aktif rusak
+
+Latar putih item aktif sempat hanya setinggi teks (25px, bukan 40px). Penyebabnya aturan Payload:
+
+```css
+.nav__link:has(.nav__link-indicator) { padding-left: 0 }
+```
+
+Aturan itu lebih kuat daripada `.nav a.nav__link`, sehingga padding kiri jadi 0. Perbaikannya: selector override harus memakai bentuk `:has()` yang sama. Diverifikasi lewat `CSS.getMatchedStylesForNode`, bukan tebak-tebakan.
 
 ### Elemen sidebar yang mudah terlewat
 
@@ -338,3 +364,6 @@ Cookie hanya ditulis bila belum ada, jadi pilihan pengguna tidak pernah ditimpa.
 | Field tampak abu-abu sebelum hidrasi | Payload menonaktifkan field sampai izin selesai dimuat | Bukan bug; screenshot harus menunggu `!input.disabled && !input.readOnly` |
 | Indikator nav aktif hanya muncul di halaman koleksi | Dashboard tidak punya link aktif | Uji indikator harus di `/admin/collections/*`, bukan `/admin` |
 | Pilihan tema ada di `/admin/account`, bukan tombol header | Desain bawaan Payload | Untuk menguji toggle, buka halaman akun |
+| Sidebar belum punya ikon per item | Payload tidak punya field `icon` per koleksi, hanya chevron grup | Perlu komponen `Nav` kustom; risiko regresi keyboard tinggi |
+| Belum ada welcome card dan search di topbar | Butuh komponen `beforeDashboard` + regenerasi import map | Dijadwalkan sebagai 3.12 |
+| Folder `referensi-desain-admin/` dikecualikan dari lint, typecheck, dan build | Kode referensi memakai dependency yang tidak terpasang dan gagal strict TS | Jangan dihapus dari `exclude` selama folder itu ada |
