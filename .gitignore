@@ -1,0 +1,63 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build output
+.next/
+out/
+build/
+dist/
+
+# Environment
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Database
+*.sql
+*.sql.gz
+*.dump
+backup/
+
+# Media uploads (lokal)
+public/media/
+uploads/
+media/
+
+# Alat pengembangan lokal (PostgreSQL portable, Node 22, profil browser)
+.dev/
+
+# Skrip & artefak verifikasi (screenshot, profil CDP)
+.verify/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+
+# Cache
+.cache/
+.turbo/
+*.tsbuildinfo
+
+# Payload
+src/payload-types.ts.bak
+
+# Testing
+coverage/
+playwright-report/
+test-results/

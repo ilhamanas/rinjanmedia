@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@theme {
+  /* Palet dari logo & situs lama. Biru #3171B3 diambil dari CSS Elementor,
+     oranye #EB4101 dari tombol header, kuning #FFC600 dari CTA hero. */
+  --color-brand-50: #eef5fb;
+  --color-brand-100: #d7e7f5;
+  --color-brand-200: #b0cfea;
+  --color-brand-300: #7fb0dc;
+  --color-brand-400: #5292c9;
+  --color-brand-500: #3171b3;
+  --color-brand-600: #27609b;
+  --color-brand-700: #1e4e7f;
+  --color-brand-800: #173c62;
+  --color-brand-900: #102943;
+
+  /* Oranye brand asli #EB4101 gagal WCAG AA dengan teks putih (3.97:1).
+     Tombol solid memakai #D93A00 (4.61:1). */
+  --color-accent-500: #eb4101;
+  --color-accent-600: #d93a00;
+  --color-accent-700: #b83000;
+
+  --color-sun-400: #ffc600;
+  --color-sun-500: #f0b800;
+
+  --color-ink-900: #101010;
+  --color-ink-700: #303133;
+  --color-ink-500: #4d4d4d;
+  --color-ink-300: #6b7176;
+
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 0.75rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #ffffff;
+    color: var(--color-ink-900);
+    font-family: var(--font-sans);
+  }
+
+  /* R-39: affordance kursor untuk semua kontrol aktif */
+  a[href],
+  button:not(:disabled),
+  [role="button"],
+  summary,
+  select,
+  label[for] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+
+  /* R-32: focus indicator selalu terlihat */
+  :focus-visible {
+    outline: 2px solid var(--color-accent-500);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
