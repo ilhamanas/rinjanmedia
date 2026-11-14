@@ -15,6 +15,16 @@ dist/
 .env.*.local
 !.env.example
 
+# Kunci SSH / kredensial (jangan pernah masuk repo)
+rinjanmedia
+rinjanmedia.pub
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+
 # Database
 *.sql
 *.sql.gz
@@ -31,6 +41,10 @@ media/
 
 # Skrip & artefak verifikasi (screenshot, profil CDP)
 .verify/
+
+# Kode sumber referensi desain pihak ketiga (MIT, Anita Parmar).
+# Dipakai sebagai rujukan visual saja, bukan bagian aplikasi.
+referensi-desain-admin/
 
 # Logs
 *.log

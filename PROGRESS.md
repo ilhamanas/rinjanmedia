@@ -1,8 +1,8 @@
 # PROGRESS.md — Status Pekerjaan
 
 **Terakhir diperbarui:** 14 November 2026
-**Fase aktif:** Fase 2 — Payload CMS + Koleksi (selesai), Fase 4 sebagian
-**Keseluruhan:** 30% (2 dari 8 fase selesai, 1 fase berjalan sebagian)
+**Fase aktif:** Fase 3 — Redesign UI/UX (berjalan), Fase 4 sebagian
+**Keseluruhan:** 34% (2 dari 8 fase selesai, 2 fase berjalan sebagian)
 
 ---
 
@@ -13,7 +13,7 @@
 | 0 | Reference Pack | 🟡 Berjalan | 75% |
 | 1 | Fondasi Next.js + Tailwind | ✅ Selesai | 100% |
 | 2 | Payload CMS + Koleksi | ✅ Selesai | 100% |
-| 3 | Redesign UI/UX | ⬜ Belum mulai | 0% |
+| 3 | Redesign UI/UX | 🟡 Berjalan | 45% |
 | 4 | Form Lead + Email | 🟡 Berjalan | 67% |
 | 5 | SEO, Sitemap, Redirect | 🟡 Berjalan | 40% |
 | 6 | QA | ⬜ Belum mulai | 0% |
@@ -134,15 +134,43 @@ requirement/
 
 | # | Task | Status | Catatan |
 |---|---|---|---|
-| 3.1 | Home | ⬜ | |
-| 3.2 | Tentang | ⬜ | |
-| 3.3 | Halaman layanan (template dinamis, 4 layanan) | ⬜ | |
-| 3.4 | Kontak | ⬜ | |
-| 3.5 | Blog index (list + filter + pencarian + paginasi) | ⬜ | |
-| 3.6 | Blog detail | ⬜ | |
+| 3.1 | Home | 🟡 | Halaman ada dan membaca CMS; restyle final menunggu screenshot mobile |
+| 3.2 | Tentang | 🟡 | Idem |
+| 3.3 | Halaman layanan (template dinamis, 4 layanan) | 🟡 | Idem, 4 layanan dari CMS |
+| 3.4 | Kontak | 🟡 | Form → Server Action, sudah teruji end-to-end |
+| 3.5 | Blog index (list + filter + pencarian + paginasi) | ⬜ | Menunggu `requirement/blog/` terisi |
+| 3.6 | Blog detail | ⬜ | Idem |
 | 3.7 | Kebijakan Privasi | ⬜ | |
-| 3.8 | Responsif semua halaman | ⬜ | 360 / 768 / 1280 / 1920 |
-| 3.9 | Audit aksesibilitas (keyboard, kontras, aria) | ⬜ | |
+| 3.8 | Responsif semua halaman | 🟡 | Diuji 360 dan 1440; 768 dan 1920 belum |
+| 3.9 | Audit aksesibilitas (keyboard, kontras, aria) | 🟡 | Situs publik + panel admin sudah diaudit dengan skrip terukur; audit penuh (Lighthouse/axe) belum |
+| 3.10 | **Tema panel admin sesuai brand Rinjan** | ✅ | `src/app/(payload)/custom.css`. Detail: `doc/design-admin.md` |
+| 3.11 | Sidebar biru + tema gelap default | ✅ | Gradien `#006dbc`→`#0060a5`, shell kartu rounded, item aktif berlatar putih. `doc/adr-003-sidebar-biru-tema-gelap.md` |
+| 3.13 | Navigasi kustom dengan ikon (`admin.components.Nav`) | ✅ | `BrandNav` + `NavShellClient`. Perilaku keyboard memakai ulang `useNav`, `inert`, `Link`, `groupNavItems`. Diuji: 1 item aktif per rute, 0/20 Tab masuk nav tertutup, 1 tombol buka/tutup |
+| 3.12 | Kartu statistik dashboard (angka dari DB) | ✅ | Komponen `AdminStats` via `beforeDashboard`; import map 26→27 entri. Angka diverifikasi sama dengan `/api/*` |
+
+### Hasil kerja 3.10: tema panel admin
+
+Palet brand diterapkan ke `/admin`: biru `#3171B3` untuk identitas dan interaktif, oranye `#D93A00` **hanya** untuk aksi utama, merah/amber error sengaja tidak disentuh.
+
+| Uji | Hasil |
+|---|---|
+| `node .verify/admin-ramp.mjs` | ✅ **0 gagal**: 17 pasangan terang + 15 gelap, ramp monoton |
+| `node .verify/admin-field-test.mjs` | ✅ 24/24: border kontrol 3.85:1 / 4.52:1, cincin fokus 5.07:1 / 5.50:1, state error tetap merah Payload |
+| `node .verify/admin-nav-focus-test.mjs` | ✅ nav aktif 7.60:1 / 6.02:1, 12/12 langkah Tab punya `:focus-visible` + indikator |
+| `node .verify/admin-brand-test.mjs` | ✅ login lewat UI, logo terang/gelap berganti benar, token sesuai tema, 0 console error |
+| `node .verify/admin-before-after.mjs` | ✅ 3 pasangan teks yang tadinya gagal AA kini lolos, 0 memburuk |
+
+Cacat bawaan Payload yang ditemukan dan diperbaiki:
+
+| Cacat | Sebelum | Sesudah |
+|---|---|---|
+| Deskripsi field (`base-400`) | 2.81:1 (gagal AA) | 4.62:1 |
+| Label field (`base-450`) | 3.32:1 (gagal AA) | 5.04:1 |
+| Teks sekunder (`base-500`) | 3.95:1 (gagal AA) | 5.48:1 |
+| Border input/textarea/select | 1.36:1 (gagal 1.4.11) | 3.85:1 terang / 4.52:1 gelap |
+| Fokus input | hanya warna border <3:1 | outline 2px, 5.07:1 / 5.50:1 |
+| Nav aktif mode gelap | 3.60:1 | 6.02:1 |
+| Tombol sekunder mode gelap | 4.20:1 | 6.02:1 |
 
 ---
 
@@ -239,6 +267,34 @@ requirement/
 | 14 Nov 2026 | Redirect 301 dipindah ke `src/proxy.ts` (Next 16 mengganti `middleware` → `proxy`); 11/11 redirect terverifikasi |
 | 14 Nov 2026 | Build produksi diuji penuh: 13 rute, 30/30 smoke test lulus (halaman, konten CMS, redirect, access control, admin) |
 | 14 Nov 2026 | Dokumen baru: `doc/adr-001-payload-di-dalam-nextjs.md`, `doc/adr-002-workaround-cli-payload.md`, `doc/guide-local-postgres.md` |
+| 14 Nov 2026 | **Tema panel admin selesai (3.10):** biru `#3171B3` untuk identitas/interaktif, oranye `#D93A00` hanya untuk aksi utama, error/warning Payload tidak disentuh. Override ditulis di `@layer payload` |
+| 14 Nov 2026 | Diperbaiki: 3 pasangan teks bawaan Payload gagal AA (2.81, 3.32, 3.95 → 4.62, 5.04, 5.48) |
+| 14 Nov 2026 | Diperbaiki: border input 1.36:1 → 3.85:1/4.52:1 (WCAG 1.4.11) dan fokus input yang hanya ditandai warna border → outline 2px |
+| 14 Nov 2026 | Diperbaiki: nav aktif dan tombol sekunder mode gelap (3.60:1 & 4.20:1 → 6.02:1). Penyebabnya `--theme-success-500` tidak ada di tabel flip Payload |
+| 14 Nov 2026 | Ditemukan: `:where()` TIDAK melindungi state error, karena urutan cascade layer mengalahkan specificity. Diperbaiki dengan `.field-type:not(.error)` |
+| 14 Nov 2026 | Import map diperbarui jadi 26 entri (2 komponen brand); `doc/adr-002` dikoreksi dari "25 entri, tanpa komponen kustom" |
+| 14 Nov 2026 | Dokumen baru: `doc/design-admin.md` |
+| 14 Nov 2026 | Repo git diinisialisasi ulang, remote `origin` = `git@github.com:ilhamanas/rinjanmedia.git`. Commit Fase 3 di-push ke `main` di atas commit awal `master` |
+| 14 Nov 2026 | Hook pre-commit (`.githooks/pre-commit`) menolak commit bila `lint` atau `typecheck` gagal. Tanpa husky, cukup `core.hooksPath` |
+| 14 Nov 2026 | `.gitignore` diperluas: kunci SSH (`rinjanmedia`, `*.pem`, `id_ed25519`) sebelumnya tidak ter-ignore |
+| 14 Nov 2026 | **Sidebar biru + gelap default (3.11):** palet diambil dari CSS demo referensi. Permukaan `#006dbc` (putih 5.37:1), aksen teks `#0099eb` (5.82:1 di kartu). Biru asli referensi `#0099eb` gagal sebagai latar (putih 3.11:1) |
+| 14 Nov 2026 | Diperbaiki: cincin fokus di sidebar putih (biru hanya 2.51:1, gagal 3:1) |
+| 14 Nov 2026 | Diperbaiki: `.hamburger` tampil sebagai kotak putih solid dan `:focus{outline:none}`; toggler, logout, dan chevron juga masih gelap di atas biru |
+| 14 Nov 2026 | Tema gelap default lewat cookie `payload-theme` di `proxy.ts`, bukan `admin.theme:'dark'` yang menghilangkan toggle |
+| 14 Nov 2026 | Dokumen baru: `doc/adr-003-sidebar-biru-tema-gelap.md` |
+| 14 Nov 2026 | **Struktur ala referensi (3.11 lanjutan):** shell kartu rounded-3xl mengambang, sidebar gradien, item nav aktif berlatar putih, topbar lengket, kartu ring+shadow. Palet diambil dari sumber referensi di `referensi-desain-admin/` |
+| 14 Nov 2026 | Deviasi sadar: gradien dibalik ke lebih gelap. Campur putih 15% seperti referensi membuat teks putih hanya 4.08:1 (gagal AA) |
+| 14 Nov 2026 | Diperbaiki: latar item nav aktif hanya setinggi teks karena `.nav__link:has(.nav__link-indicator){padding-left:0}` bawaan Payload. Diverifikasi lewat `CSS.getMatchedStylesForNode` |
+| 14 Nov 2026 | `referensi-desain-admin/` dikecualikan dari ESLint, tsconfig, dan build karena memakai dependency yang tidak terpasang |
+| 14 Nov 2026 | **Kartu statistik dashboard (3.12):** komponen server `AdminStats` lewat `beforeDashboard`. Angka dari Local API: 4 layanan, 11 redirect, 0 media. Diverifikasi sama dengan `/api/*` |
+| 14 Nov 2026 | Import map di-regenerate 26 → 27 entri (prosedur ADR-002); rute sementara dihapus setelah dipakai |
+| 14 Nov 2026 | **Navigasi kustom (3.13):** `admin.components.Nav` diganti `BrandNav` + `NavShellClient`. Ikon per koleksi, kotak identitas, pil putih untuk item aktif |
+| 14 Nov 2026 | Perilaku keyboard TIDAK ditulis ulang: `useNav`, `inert`, `tabIndex -1`, `Link`, `groupNavItems` dipakai ulang dari Payload |
+| 14 Nov 2026 | Risiko diuji, bukan diasumsikan: 9 rute punya tepat 1 item aktif; 0/20 langkah Tab masuk nav tertutup; `.focus()` paksa ditolak |
+| 14 Nov 2026 | Import map 27 → 28 entri setelah Nav kustom |
+| 15 Nov 2026 | Dua tombol tutup sidebar (ours + chip bawaan Payload) → chip disembunyikan selama nav terbuka lewat `.nav-toggler--is-open { display: none }`; saat tertutup chip kembali jadi hamburger |
+| 15 Nov 2026 | Uji buka/tutup memakai mouse sungguhan (`Input.dispatchMouseEvent`) karena `element.click()` melewati hit-testing; visibilitas dihitung dengan `checkVisibility({ checkOpacity: true })` |
+| 15 Nov 2026 | Batas chip hamburger dinaikkan ke token kontrol: 1.36:1 → 3.85:1 (terang) / 4.52:1 (gelap) |
 
 ---
 
@@ -246,7 +302,7 @@ requirement/
 
 1. **Baca `doc/` sebelum bekerja.** Minimal `doc/PRD.md` dan bagian relevan `doc/DOCUMENTATION.md`. Jangan mulai tanpa itu.
 2. **Panggil skill wajib** sesuai `AGENTS.md` §3 — `using-superpowers` di awal sesi, `ponytail` untuk kode, `antislop*` untuk UI/UX.
-3. Fase 2 selesai. Berikutnya: Fase 3 (redesign UI/UX) atau Fase 4.5 (email notifikasi). Fase 2.12 (seed blog) dan `/blog/[slug]` tetap menunggu `requirement/blog/` terisi.
+3. Fase 2 selesai. Fase 3 berjalan: tema panel admin (3.10) sudah selesai; halaman publik sudah ada dan membaca CMS tapi restyle final menunggu screenshot mobile. Berikutnya: Fase 3.5/3.6 (blog) menunggu `requirement/blog/`, atau Fase 4.5 (email notifikasi).
 4. **PostgreSQL harus jalan sebelum `npm run dev`** — lihat `doc/guide-local-postgres.md`. Kalau DB mati, semua halaman yang membaca CMS akan 500.
 5. **Jangan pakai CLI Payload** — rusak di mesin ini. Untuk regenerate import map, ikuti prosedur di `doc/adr-002-workaround-cli-payload.md`.
 6. Keputusan arsitektur yang sudah dikunci ada di `doc/PRD.md` §13 — jangan diubah tanpa persetujuan.
@@ -254,3 +310,7 @@ requirement/
 8. **`npm`, bukan `pnpm`.** `pnpm` gagal di mesin ini (install script diblokir, `corepack enable` EPERM). Semua perintah di `AGENTS.md`/`DOCUMENTATION.md` yang memakai `pnpm` harus dijalankan sebagai `npm`.
 9. **Jangan pakai PowerShell `-replace` dengan `$1`** pada file sumber — pernah merusak 5 file (`Config`→`Conrig`, `from`→`rrom`). Pakai tool `edit`.
 10. **Folder `.verify/`** berisi skrip verifikasi (CDP, tanpa dependency): `redirect-test.mjs`, `prod-smoke.mjs`, `admin-test.mjs`, `form-cms-test.mjs`, `media-test-big.mjs`, `shot.mjs`, `cdp.mjs`. Jalankan dengan `node`. Hapus sebelum deploy.
+11. **Verifikasi admin butuh build produksi.** Skrip `.verify/admin-*.mjs` menargetkan `http://localhost:3000` dari `npm run start`, bukan `dev`. Urutannya: `npx next build` → `npm run start` → jalankan skrip. Setelah mengubah `custom.css`, build ulang dulu atau hasil ukur akan memakai CSS lama.
+12. **Jangan pakai `.focus()` programatik untuk menguji `:focus-visible`.** Chromium hanya menyalakannya untuk input keyboard sungguhan. Pakai `Input.dispatchKeyEvent` Tab lewat CDP.
+13. **Tema Payload disimpan di cookie `payload-theme`, bukan `localStorage`,** dan atribut `data-theme` dikelola React. Memanggil `setAttribute('data-theme', ...)` manual bisa langsung ditimpa balik, sehingga hasil ukur menyesatkan. Set cookie lalu muat ulang halaman.
+14. **`:where()` tidak melindungi apa pun dari override lintas layer.** Urutan cascade layer mengalahkan specificity. Untuk membiarkan state Payload menang, kecualikan lewat selector (`.field-type:not(.error)`), bukan dengan menurunkan specificity.

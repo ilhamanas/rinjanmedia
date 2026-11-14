@@ -12,7 +12,8 @@ Semua dokumentasi teknis dan produk proyek Rinjan Media berada di folder ini. Ro
 |---|---|---|
 | [`PRD.md`](./PRD.md) | Kebutuhan produk, ruang lingkup, arsitektur, kriteria penerimaan, risiko, estimasi | Draft |
 | [`DOCUMENTATION.md`](./DOCUMENTATION.md) | Setup lokal, deploy VPS, backup/restore, monitoring, troubleshooting, ADR | Draft |
-| [`design-tokens.md`](./design-tokens.md) | Palet brand, aturan kontras WCAG, tipografi, state aksesibilitas | Final |
+| [`design-tokens.md`](./design-tokens.md) | Palet brand, aturan kontras WCAG, tipografi, state aksesibilitas (situs publik) | Final |
+| [`design-admin.md`](./design-admin.md) | Tema panel `/admin`: peran warna, ramp netral & aksen, kontras terukur dua tema, override elevation gelap, kontrol form, logo | Final |
 
 ## Architecture Decision Records
 
@@ -20,6 +21,7 @@ Semua dokumentasi teknis dan produk proyek Rinjan Media berada di folder ini. Ro
 |---|---|---|
 | [`adr-001-payload-di-dalam-nextjs.md`](./adr-001-payload-di-dalam-nextjs.md) | Payload 3 dijalankan di dalam proses Next.js (bukan server terpisah) — termasuk konsekuensi route group dan `proxy.ts` | Final |
 | [`adr-002-workaround-cli-payload.md`](./adr-002-workaround-cli-payload.md) | CLI Payload rusak di mesin ini (`tsx` + `undici`); import map di-generate lewat rute sementara di Next.js, tipe ditulis manual | Final |
+| [`adr-003-sidebar-biru-tema-gelap.md`](./adr-003-sidebar-biru-tema-gelap.md) | Panel admin memakai bahasa visual dashboard modern (sidebar biru, gelap default) tanpa menyalin konten referensi; kartu statistik dipisah ke langkah berikutnya | Final |
 
 ## Panduan Operasional
 
@@ -40,7 +42,7 @@ Dokumen baru **wajib** dibuat di folder ini dengan format `kebab-case.md` dan pr
 | `guide-*` | Panduan operasional | `guide-deploy-staging.md` |
 | `audit-*` | Hasil audit | `audit-lighthouse-2026-11.md` |
 | `api-*` | Dokumentasi API | `api-leads-endpoint.md` |
-| `design-*` | Design system & token | `design-tokens.md` |
+| `design-*` | Design system & token | `design-tokens.md`, `design-admin.md` |
 | `notes-*` | Catatan riset/eksplorasi | `notes-riset-cms.md` |
 
 ### Header wajib setiap dokumen baru

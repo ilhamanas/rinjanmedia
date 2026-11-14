@@ -254,6 +254,42 @@ npm run build
 ```
 Ketiganya harus lulus. Jangan commit kode yang gagal build.
 
+**Hook pre-commit otomatis.** `lint` dan `typecheck` sudah dipasang sebagai hook git di `.githooks/pre-commit`, jadi commit ditolak bila keduanya gagal. Tidak memakai husky, hanya `core.hooksPath`, supaya tidak menambah dependency.
+
+Setelah clone baru, aktifkan sekali:
+
+```powershell
+git config core.hooksPath .githooks
+```
+
+`npm run build` sengaja **tidak** dijalankan di hook: `next build` butuh PostgreSQL hidup dan puluhan detik, terlalu berat untuk setiap commit. Jalankan manual sebelum push.
+
+Melewati hook (hanya bila benar-benar perlu, mis. commit dokumentasi saat DB mati):
+
+```powershell
+git commit --no-verify
+```
+
+### 9.4 Remote & Kunci SSH
+
+Remote `origin`: `git@github.com:ilhamanas/rinjanmedia.git`
+
+Autentikasi memakai kunci khusus repo ini, diatur **lokal** (bukan global) supaya tidak mengganggu repo lain di mesin yang sama:
+
+```powershell
+git config core.sshCommand 'ssh -i C:/ssh-keys/rinjanmedia -o IdentitiesOnly=yes'
+```
+
+Kunci privat **wajib** berizin ketat di Windows. Bila `ssh` menolak dengan `Bad permissions`, perbaiki dengan:
+
+```powershell
+icacls "C:\ssh-keys\rinjanmedia" /inheritance:r /grant:r "$env:USERDOMAIN\$env:USERNAME:F"
+```
+
+Tanpa langkah itu, `BUILTIN\Users` dan `Authenticated Users` masih bisa membaca kunci privat.
+
+Kunci **jangan** disimpan di dalam folder repo. `.gitignore` sudah memblokir `rinjanmedia`, `*.pem`, `*.key`, `id_ed25519`, tetapi mencegah lebih baik daripada mengandalkan ignore.
+
 > **`npm`, bukan `pnpm`.** `pnpm` gagal di mesin ini (install script diblokir, `corepack enable` EPERM). Semua contoh `pnpm` di dokumen ini harus dijalankan sebagai `npm`.
 
 ---

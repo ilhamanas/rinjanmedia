@@ -38,6 +38,21 @@ async function loadRedirects(baseUrl: string) {
 export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl
 
+  // Tema gelap sebagai default panel admin, tanpa mengunci pilihan pengguna.
+  // `admin.theme: 'dark'` di payload.config akan MENGHILANGKAN toggle, jadi
+  // yang dipakai adalah cookie `payload-theme` yang dibaca ThemeProvider
+  // Payload. Cookie hanya ditulis bila belum ada, sehingga pilihan pengguna
+  // tidak pernah ditimpa.
+  if (pathname.startsWith('/admin') && !request.cookies.has('payload-theme')) {
+    const res = NextResponse.next()
+    res.cookies.set('payload-theme', 'dark', {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365,
+      sameSite: 'lax',
+    })
+    return res
+  }
+
   // Jangan sentuh admin, API, aset statis, dan file Next.
   if (
     pathname.startsWith('/admin') ||

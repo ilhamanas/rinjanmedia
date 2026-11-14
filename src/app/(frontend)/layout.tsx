@@ -14,7 +14,7 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SERVER_URL ?? 'https://rinjanmedia.com'),
   title: {
-    default: 'Rinjan Media — Website, Desain, Wifi, dan IT Support',
+    default: 'Rinjan Media | Website, Desain, Wifi, dan IT Support',
     template: '%s | Rinjan Media',
   },
   description:

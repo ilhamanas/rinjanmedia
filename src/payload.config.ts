@@ -26,7 +26,16 @@ export default buildConfig({
     user: Users.slug,
     importMap: { baseDir: path.resolve(dirname) },
     meta: {
-      titleSuffix: ' — Rinjan Media',
+      titleSuffix: ' | Rinjan Media',
+      icons: [{ rel: 'icon', type: 'image/png', url: '/icon-rinjan.png' }],
+    },
+    components: {
+      Nav: '/components/admin/BrandNav#BrandNav',
+      beforeDashboard: ['/components/admin/AdminStats#AdminStats'],
+      graphics: {
+        Logo: '/components/admin/BrandLogo#BrandLogo',
+        Icon: '/components/admin/BrandIcon#BrandIcon',
+      },
     },
   },
   collections: [Pages, Posts, Categories, Services, Media, Leads, Redirects, Users],

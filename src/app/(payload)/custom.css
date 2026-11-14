@@ -1,0 +1,683 @@
+/* ============================================================================
+   Panel admin Rinjan Media - tema brand
+   ----------------------------------------------------------------------------
+   Payload mendeklarasikan `@layer payload-default, payload;`. Semua CSS bawaannya
+   ada di `payload-default`, jadi file ini menulis ke layer `payload` supaya
+   menang tanpa perlu `!important`.
+
+   Peran warna (maksimal 3 inti + 1 aksen):
+     biru   #3171B3 -> identitas dan interaktif: fokus, nav aktif, selection, status
+     oranye #D93A00 -> HANYA aksi utama: Publish, Simpan, Login
+     netral         -> permukaan dan teks
+     merah/amber    -> error dan warning, sengaja TIDAK disentuh (semantik)
+
+   Semua rasio kontras di bawah diukur lewat `.verify/admin-ramp.mjs`, bukan
+   diperkirakan. Ringkasan hasil ada di `doc/design-admin.md`.
+   ========================================================================== */
+
+/* Urutan layer dideklarasikan ulang di sini supaya tidak bergantung pada urutan
+   bundling CSS Next.js. Bila berkas ini kebetulan dimuat lebih dulu, tanpa baris
+   ini `payload` akan jadi layer pertama dan justru kalah dari `payload-default`. */
+@layer payload-default, payload;
+
+@layer payload {
+  :root {
+    /* Netral: abu bawaan Payload dengan tint biru sangat tipis (2%) di stop
+       permukaan. Dua penyesuaian dari bawaan Payload:
+       1. Stop 0-350 mempertahankan luminansi asli Payload, karena stop itulah
+          yang jadi permukaan kartu/panel/input dan border. Menggelapkannya
+          membuat panel terlihat seperti blok abu-abu kusam.
+       2. Stop 400-550 digelapkan. Di sanalah teks informatif berada (deskripsi
+          field, header tabel, label nav), dan bawaan Payload hanya mencapai
+          2.81-3.95:1 sehingga gagal WCAG AA. */
+    --color-base-0: #ffffff;
+    --color-base-50: #f1f2f4;
+    --color-base-100: #e7e9ea;
+    --color-base-150: #dadbdc;
+    --color-base-200: #cdcecf;
+    --color-base-250: #c0c1c3;
+    --color-base-300: #b3b4b5;
+    --color-base-350: #9e9fa0;
+    --color-base-400: #747576;
+    --color-base-450: #6e6f70;
+    --color-base-500: #69696a;
+    --color-base-550: #606060;
+    --color-base-600: #535353;
+    --color-base-650: #464646;
+    --color-base-700: #3a3a3a;
+    --color-base-750: #303030;
+    --color-base-800: #272727;
+    --color-base-850: #1e1e1e;
+    --color-base-900: #151515;
+    --color-base-950: #0b0b0b;
+    --color-base-1000: #000000;
+
+    /* Aksen/sukses: ramp biru brand, #3171B3 tepat di stop 600 */
+    --color-success-0: #ffffff;
+    --color-success-50: #f6f9fc;
+    --color-success-100: #f0f5fa;
+    --color-success-150: #e3ecf5;
+    --color-success-200: #d1e0ef;
+    --color-success-250: #bcd2e9;
+    --color-success-300: #a3c1e1;
+    --color-success-350: #85aed8;
+    --color-success-400: #6398cf;
+    --color-success-450: #4887c8;
+    --color-success-500: #387cc2;
+    --color-success-550: #3576ba;
+    --color-success-600: #3171b3;
+    --color-success-650: #2c649d;
+    --color-success-700: #275686;
+    --color-success-750: #224972;
+    --color-success-800: #1e3f62;
+    --color-success-850: #18334e;
+    --color-success-900: #13273c;
+    --color-success-950: #0d1b28;
+    --color-success-1000: #070d13;
+
+    /* Token brand yang dipakai langsung di bawah */
+    --rinjan-blue: #3171b3;
+    --rinjan-orange: #d93a00;
+    --rinjan-orange-hover: #b83000;
+    --rinjan-orange-active: #a02a00;
+
+    /* Font brand. Poppins dimuat lewat next/font di layout panel admin. */
+    --font-body: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+
+    /* Cincin fokus memakai biru, bukan oranye: tombol utama panel ini oranye,
+       dan cincin oranye di atas tombol oranye tidak terlihat. Lewat
+       --theme-success-600, cincin ini 5.07:1 di atas putih dan 6.02:1 di atas
+       kanvas gelap (di mode gelap token itu memetakan ke --color-success-400
+       #6398cf). */
+    --accessibility-outline: 2px solid var(--theme-success-600);
+    --accessibility-outline-offset: 2px;
+
+    /* Garis tepi form control. Bawaan Payload memakai elevation-150 yang hanya
+       mencapai 1.36:1 di atas putih dan 1.38:1 di atas kanvas gelap, padahal
+       WCAG 1.4.11 mewajibkan 3:1 untuk batas kontrol. Nilai di bawah sudah
+       diukur: 3.85:1 (terang, di atas putih) dan 3.62:1 (gelap, di atas input
+       #1e1e1e). */
+    --rinjan-control-border: #808285;
+    --rinjan-control-border-hover: #69696a;
+
+    /* Sidebar biru terang mengikuti referensi dashboard.
+       Dua token, bukan satu, karena tidak ada satu biru yang lolos di kedua
+       peran: putih di atas biru terang = rendah, sedangkan biru terang sebagai
+       TEKS di atas kartu gelap justru lolos. Jadi:
+         - permukaan (latar sidebar) memakai biru lebih gelap #006dbc
+           (putih 5.37:1, teks muted 4.80:1)
+         - aksen teks di atas gelap memakai #0099eb (5.82:1 di kartu)
+       Warna asli referensi (#0099eb) TIDAK dipakai sebagai latar sidebar:
+       putih di atasnya hanya 3.11:1 dan gagal AA. */
+    --rinjan-nav-bg: #006dbc;
+    --rinjan-nav-bg-hover: #005aa8;
+    --rinjan-nav-text: #ffffff;
+    --rinjan-nav-text-muted: #e8f4fd;
+    --rinjan-nav-indicator: #ffffff;
+
+    /* Gradien sidebar. Referensi mencampur brand dengan PUTIH 15% ke bawah,
+       tetapi itu menaikkan luminansi sampai teks putih tinggal 4.08:1 (gagal).
+       Diukur: campur putih 10% = 4.45:1, 15% = 4.08:1, 20% = 3.74:1. Jadi arah
+       gradien dibalik ke lebih GELAP: #006dbc -> #0060a5 (putih 5.37 -> 6.53). */
+    --rinjan-nav-bg-end: #0060a5;
+
+    /* Kanvas gelap mengikuti referensi: lebih pekat daripada sebelumnya. */
+    --rinjan-canvas: #0a0a0a;
+    --rinjan-surface: #161616;
+    --rinjan-border: #292929;
+    --rinjan-accent: #0099eb;
+  }
+
+  /* Elevation gelap di-override eksplisit, tidak sekadar dibalik seperti
+     bawaan Payload. Pembalikan otomatis membuat elev-400/450 (teks informatif)
+     hanya 3.7-4.2:1 di kanvas gelap. */
+  html[data-theme='dark'] {
+    /* Kanvas dan kartu memakai nilai referensi (#0a0a0a / #161616), lebih
+       pekat dari ramp netral. Teks putih di atasnya makin lega. */
+    --theme-elevation-0: var(--rinjan-canvas);
+    --theme-elevation-50: var(--rinjan-surface);
+    --theme-elevation-100: #1f1f1f;
+    --theme-elevation-150: var(--rinjan-border);
+    --theme-elevation-200: var(--color-base-700);
+    --theme-elevation-250: var(--color-base-650);
+    --theme-elevation-300: var(--color-base-600);
+    --theme-elevation-350: var(--color-base-550);
+    --theme-elevation-400: var(--color-base-350);
+    --theme-elevation-450: var(--color-base-300);
+    --theme-elevation-500: var(--color-base-250);
+    --theme-elevation-550: var(--color-base-200);
+    --theme-elevation-600: var(--color-base-150);
+    --theme-elevation-650: var(--color-base-100);
+    --theme-elevation-700: var(--color-base-50);
+    --theme-elevation-750: var(--color-base-0);
+    --theme-elevation-800: var(--color-base-0);
+    --theme-elevation-850: var(--color-base-0);
+    --theme-elevation-900: var(--color-base-0);
+    --theme-elevation-950: var(--color-base-0);
+    --theme-elevation-1000: var(--color-base-0);
+
+    /* Di kanvas gelap garis tepi perlu lebih terang, bukan lebih gelap.
+       Diukur terhadap latar input yang sebenarnya (#303030 di mode gelap):
+       #858585 = 3.58:1, dan tetap 4.52:1 bila latarnya #1e1e1e. */
+    --rinjan-control-border: #858585;
+    --rinjan-control-border-hover: #9e9fa0;
+  }
+
+  /* --- Affordance kursor (R-39) ------------------------------------------ */
+  a[href],
+  button:not(:disabled),
+  [role='button'],
+  summary,
+  select,
+  label[for] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+
+  /* --- Selection ---------------------------------------------------------- */
+  ::selection {
+    background: var(--theme-success-250);
+    color: var(--theme-elevation-1000);
+  }
+
+  /* --- Tombol utama: oranye brand -----------------------------------------
+     Putih di #D93A00 = 4.61:1 (AA). Oranye asli #EB4101 hanya 3.97:1,
+     jadi tidak dipakai untuk tombol solid. */
+  .btn--style-primary {
+    --bg-color: var(--rinjan-orange);
+    --color: #ffffff;
+    --hover-bg: var(--rinjan-orange-hover);
+    --hover-color: #ffffff;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+
+  .btn--style-primary:active {
+    background-color: var(--rinjan-orange-active);
+  }
+
+  .btn--style-primary.btn--disabled {
+    --bg-color: var(--theme-elevation-150);
+    --color: var(--theme-elevation-500);
+    --hover-bg: var(--theme-elevation-150);
+    --hover-color: var(--theme-elevation-500);
+  }
+
+  /* Tombol sekunder: garis biru brand, bukan abu-abu */
+  .btn--style-secondary {
+    --btn-border: 1px solid var(--theme-success-600);
+    --color: var(--theme-success-700);
+    --hover-btn-border: 1px solid var(--theme-success-700);
+    --hover-color: var(--theme-success-800);
+    border-radius: 6px;
+  }
+
+  html[data-theme='dark'] .btn--style-secondary {
+    /* --theme-success-500 TIDAK ada di tabel flip Payload (tabelnya melompat
+       dari 450 ke 550), jadi nilainya tetap #387cc2 dan hanya mencapai
+       4.20:1 di kanvas gelap. --theme-success-600 di mode gelap berubah jadi
+       --color-success-400 (#6398cf) yang mencapai 6.02:1. */
+    --color: var(--theme-success-600);
+    --hover-color: var(--theme-success-300);
+  }
+
+  /* --- Kontrol form -------------------------------------------------------
+     Dua cacat bawaan Payload yang diperbaiki di sini:
+
+     1. Garis tepi input/textarea/select memakai elevation-150 = 1.36:1 di atas
+        putih. Batas kontrol butuh 3:1 (WCAG 1.4.11). Diganti ke token kontrol.
+     2. Payload menulis `input:focus { outline: 0 }` dan hanya menandai fokus
+        dengan perubahan warna border 1px. Itu satu-satunya indikator fokus pada
+        field, jadi tidak boleh dihilangkan; cincin fokus dikembalikan.
+
+     PENTING: `:where()` TIDAK cukup untuk melindungi state error. Urutan layer
+     mengalahkan specificity, dan aturan di sini ada di layer `payload` yang
+     selalu menang atas `payload-default` milik Payload. Jadi state error dan
+     disabled harus dikecualikan lewat selector-nya langsung
+     (`.field-type:not(.error)`), bukan lewat specificity rendah. */
+  .field-type:not(.error) :where(input, textarea),
+  .field-type:not(.error) :where(input, textarea):hover,
+  .react-select:not(.error) .rs__control,
+  .react-select:not(.error) .rs__control:hover {
+    border-color: var(--rinjan-control-border);
+  }
+
+  .field-type:not(.error) :where(input, textarea):not(:disabled):hover,
+  .react-select:not(.error) .rs__control:hover {
+    border-color: var(--rinjan-control-border-hover);
+  }
+
+  /* Fokus keyboard pada kontrol: cincin biru, sama seperti tombol. */
+  .field-type :where(input, textarea):focus-visible {
+    outline: var(--accessibility-outline);
+    outline-offset: var(--accessibility-outline-offset);
+  }
+
+  /* Select (react-select) memakai div, bukan elemen form, jadi :focus-visible
+     tidak berlaku. Ditandai lewat kelas state yang diberikan react-select. */
+  .react-select .rs__control--is-focused {
+    border-color: var(--theme-success-600);
+    box-shadow: 0 0 0 2px var(--theme-success-600);
+  }
+
+  /* --- Shell ---------------------------------------------------------------
+     Referensi membungkus seluruh app dalam satu kartu rounded-3xl dengan jarak
+     dari tepi jendela, dan area kerja memakai latar muted yang berbeda dari
+     kartu. Bawaan Payload menempelkan semuanya ke tepi. */
+  .template-default {
+    margin: 20px 16px;
+    height: calc(100vh - 40px);
+    border-radius: 24px;
+    overflow: hidden;
+    background-color: var(--theme-elevation-0);
+  }
+
+  .template-default__wrap {
+    background-color: var(--theme-elevation-50);
+    border-top-right-radius: 24px;
+    border-bottom-right-radius: 24px;
+    overflow: hidden;
+  }
+
+  /* Topbar lengket seperti referensi: latar permukaan + garis bawah tipis. */
+  .app-header {
+    background-color: var(--theme-elevation-0);
+    border-bottom: 1px solid var(--theme-elevation-150);
+  }
+
+  /* --- Navigasi -----------------------------------------------------------
+     Sidebar memakai markup sendiri (komponen BrandNav), jadi aturan di sini
+     menarget kelas Rinjan, bukan kelas internal Payload.
+
+     Tiga hal yang wajib dijaga bersamaan:
+     1. Latar item aktif PUTIH dengan teks biru #006dbc (5.37:1).
+     2. Cincin fokus PUTIH: cincin biru hanya ~2.5:1 di atas sidebar biru dan
+        gagal ambang 3:1 untuk indikator non-teks.
+     3. Ikon memakai currentColor, sehingga otomatis ikut biru saat item aktif. */
+  .nav {
+    background: linear-gradient(
+      to bottom,
+      var(--rinjan-nav-bg),
+      var(--rinjan-nav-bg-end)
+    );
+    border-right-color: transparent;
+    border-top-left-radius: 24px;
+    border-bottom-left-radius: 24px;
+    overflow: hidden;
+  }
+
+  /* Payload punya tombol buka/tutup sendiri (chip di pojok kiri atas
+     template). Saat sidebar terbuka, tombol itu duplikat dengan tombol di
+     kotak identitas, jadi disembunyikan. Saat sidebar tertutup, kelas ini
+     hilang dan chip muncul kembali sebagai hamburger, menjadi satu-satunya
+     jalan membuka sidebar. */
+  .nav-toggler--is-open {
+    display: none;
+  }
+
+  /* Batas chip hamburger juga batas kontrol: garis bawaan elevation-150
+     hanya 1.36:1 di tema terang. Token kontrol memberi 3.85:1 (terang) dan
+     4.52:1 (gelap). Hover butuh aturan sendiri karena layer ini menang atas
+     payload-default tanpa melihat specificity. */
+  .hamburger {
+    box-shadow: 0 0 0 1px var(--rinjan-control-border);
+  }
+
+  .hamburger:hover {
+    box-shadow: 0 0 0 1px var(--rinjan-control-border-hover);
+  }
+
+  .rinjan-nav__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 16px 14px;
+    color: var(--rinjan-nav-text);
+  }
+
+  .rinjan-nav__brand-mark {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    background-color: rgb(255 255 255 / 20%);
+    font-weight: 700;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .rinjan-nav__brand-name {
+    font-size: 14px;
+    font-weight: 600;
+    flex-grow: 1;
+    white-space: nowrap;
+  }
+
+  .rinjan-nav__collapse {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 8px;
+    background-color: rgb(255 255 255 / 20%);
+    color: var(--rinjan-nav-text);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .rinjan-nav__collapse:hover {
+    background-color: rgb(255 255 255 / 32%);
+  }
+
+  .rinjan-nav__collapse:focus-visible {
+    outline: 2px solid var(--rinjan-nav-indicator);
+    outline-offset: 2px;
+  }
+
+  .rinjan-nav__group {
+    margin-bottom: 6px;
+  }
+
+  .rinjan-nav__group-label {
+    margin: 14px 0 6px;
+    padding-inline: 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--rinjan-nav-text-muted);
+  }
+
+  .rinjan-nav__list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0;
+    padding: 0 10px;
+    list-style: none;
+  }
+
+  .rinjan-nav__link {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    color: var(--rinjan-nav-text);
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .rinjan-nav__link:hover {
+    background-color: var(--rinjan-nav-bg-hover);
+    text-decoration: none;
+  }
+
+  .rinjan-nav__link:focus-visible {
+    outline: 2px solid var(--rinjan-nav-indicator);
+    outline-offset: 2px;
+  }
+
+  /* Ikon mengikuti warna teks, jadi otomatis biru saat item aktif. */
+  .rinjan-nav__icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  /* Item aktif: pil putih penuh, teks dan ikon biru. */
+  .rinjan-nav__link--active {
+    background-color: #ffffff;
+    color: var(--rinjan-nav-bg);
+    font-weight: 600;
+  }
+
+  .rinjan-nav__link--active:hover {
+    background-color: #ffffff;
+  }
+
+  .rinjan-nav__controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: auto;
+    padding: 12px 16px 18px;
+    color: var(--rinjan-nav-text);
+  }
+
+  /* Tombol/logout di dalam sidebar memakai warna teks global. Tanpa ini
+     ikonnya tetap #272727 di tema terang dan tidak terlihat di atas biru. */
+  .rinjan-nav__controls a,
+  .rinjan-nav__controls button,
+  .rinjan-nav__controls .stroke,
+  .rinjan-nav__controls svg {
+    color: var(--rinjan-nav-text);
+    stroke: var(--rinjan-nav-text);
+  }
+
+  .rinjan-nav__controls a:focus-visible,
+  .rinjan-nav__controls button:focus-visible {
+    outline: 2px solid var(--rinjan-nav-indicator);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  /* Payload merender NavGroup dengan tombol sendiri; warnanya disamakan
+     dengan sidebar. */
+  .nav-group__toggle {
+    color: var(--rinjan-nav-text-muted);
+    padding-inline: 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .nav-group__toggle:hover,
+  .nav-group__toggle:focus-visible {
+    color: var(--rinjan-nav-text);
+  }
+
+  .nav-group__toggle .stroke,
+  .nav-group__indicator .stroke {
+    stroke: var(--rinjan-nav-text-muted);
+  }
+
+  .nav-group__toggle:focus-visible {
+    outline: 2px solid var(--rinjan-nav-indicator);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* --- Ringkasan statistik (komponen beforeDashboard) ----------------------
+     Kartu angka diambil dari database lewat komponen server. Gaya di sini
+     memakai token yang sama dengan sidebar supaya terasa satu keluarga. */
+  .rinjan-stats {
+    margin-bottom: 24px;
+  }
+
+  .rinjan-stats__head {
+    margin-bottom: 16px;
+  }
+
+  .rinjan-stats__title {
+    margin: 0 0 6px;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--theme-elevation-1000);
+  }
+
+  .rinjan-stats__sub {
+    margin: 0;
+    font-size: 14px;
+    color: var(--theme-elevation-500);
+  }
+
+  .rinjan-stats__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (max-width: 1024px) {
+    .rinjan-stats__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 600px) {
+    .rinjan-stats__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .rinjan-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    height: 100%;
+    padding: 20px;
+    border-radius: 16px;
+    background-color: var(--theme-elevation-0);
+    border: 1px solid var(--theme-elevation-150);
+    text-decoration: none;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .rinjan-stat:hover {
+    border-color: var(--rinjan-accent);
+    background-color: var(--theme-elevation-50);
+  }
+
+  .rinjan-stat:focus-visible {
+    outline: 2px solid var(--theme-success-600);
+    outline-offset: 2px;
+  }
+
+  .rinjan-stat__value {
+    font-size: 34px;
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--theme-elevation-1000);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .rinjan-stat__label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--theme-elevation-800);
+  }
+
+  .rinjan-stat__hint {
+    font-size: 12px;
+    color: var(--theme-elevation-500);
+  }
+
+  /* --- Logo dan ikon brand -------------------------------------------------
+     Aturan tema ditulis dengan specificity setara (html[data-theme] + kelas).
+     Kalau hanya `.rinjan-logo--dark { display: none }`, aturan itu akan
+     mengalahkan `html[data-theme='dark'] .rinjan-logo--light` sehingga logo
+     terang tetap tersembunyi walau temanya terang. */
+  .rinjan-logo {
+    display: block;
+    height: 34px;
+    width: auto;
+  }
+
+  html[data-theme='light'] .rinjan-logo--dark,
+  html[data-theme='dark'] .rinjan-logo--light {
+    display: none;
+  }
+
+  html[data-theme='light'] .rinjan-logo--light,
+  html[data-theme='dark'] .rinjan-logo--dark {
+    display: block;
+  }
+
+  .step-nav__home .rinjan-mark {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* --- Kartu --------------------------------------------------------------
+     Referensi memakai kartu besar dengan radius lega dan permukaan lebih
+     terang dari kanvas. Kartu koleksi bawaan Payload memakai --cols: 5
+     sehingga sempit; diturunkan ke 3 supaya tiap kartu terbaca sebagai
+     pintasan, bukan tabel. */
+  .card {
+    border-radius: 16px;
+    background-color: var(--rinjan-surface);
+    border-color: var(--rinjan-border);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 24%);
+  }
+
+  html[data-theme='light'] .card {
+    background-color: var(--theme-elevation-50);
+    border-color: var(--theme-elevation-150);
+  }
+
+  .collections__card-list {
+    --cols: 3;
+    gap: 16px;
+  }
+
+  .card--has-onclick:hover {
+    border-color: var(--rinjan-accent);
+    box-shadow: 0 2px 8px -2px rgb(0 153 235 / 22%);
+  }
+
+  .card__actions .btn__icon:hover {
+    border-color: var(--theme-success-500);
+    color: var(--theme-success-700);
+  }
+
+  /* Tombol: radius lega mengikuti kartu, tetap di bawah 18px supaya tidak jadi
+     pil (R-11). */
+  .btn {
+    border-radius: 12px;
+  }
+
+  /* --- Halaman login -------------------------------------------------------
+     Permukaan diberi tint biru brand supaya panel ini terasa milik Rinjan,
+     bukan panel Payload generik. Warna solid, bukan gradien. */
+  .template-minimal {
+    background-color: var(--theme-success-50);
+  }
+
+  html[data-theme='dark'] .template-minimal {
+    background-color: var(--theme-elevation-0);
+  }
+
+  .template-minimal__wrap {
+    background-color: var(--theme-elevation-0);
+    border: 1px solid var(--theme-elevation-150);
+    border-radius: 12px;
+    padding: 40px 32px 32px;
+    box-shadow: 0 12px 32px -12px rgb(16 41 67 / 16%);
+  }
+
+  html[data-theme='dark'] .template-minimal__wrap {
+    box-shadow: none;
+  }
+
+  .login__brand {
+    margin-bottom: 24px;
+  }
+
+  /* --- Dashboard ---------------------------------------------------------- */
+  .collections__label {
+    color: var(--theme-elevation-800);
+  }
+}
