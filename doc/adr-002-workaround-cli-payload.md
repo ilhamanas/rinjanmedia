@@ -38,14 +38,14 @@ Menambahkan `.js` pada import **memperbaiki CLI tapi merusak Next.js** — Turbo
 
 | Kebutuhan CLI | Pengganti | Status |
 |---|---|---|
-| `generate:importmap` | Rute sementara di dalam Next.js yang memanggil `generateImportMap()` dari paket `payload` | ✅ Terbukti (25 komponen) |
+| `generate:importmap` | Rute sementara di dalam Next.js yang memanggil `generateImportMap()` dari paket `payload` | ✅ Terbukti (26 komponen) |
 | `generate:types` | Tipe ditulis manual di `src/lib/payload.ts` (`ServiceDoc`, `SettingsDoc`) | ✅ Berjalan |
 | `payload migrate` | Payload `db-postgres` push otomatis saat dev | ✅ 47 tabel terbuat |
 | `payload seed` | `scripts/seed.mjs` lewat REST API | ✅ Idempoten |
 
 ### Cara regenerate import map
 
-Import map **hanya perlu dibuat ulang** bila menambah komponen admin kustom (`admin.components.*`) atau mengubah `lexicalEditor()` features. Saat ini tidak ada komponen kustom, tapi rich text butuh 24 komponen bawaan.
+Import map **hanya perlu dibuat ulang** bila menambah komponen admin kustom (`admin.components.*`) atau mengubah `lexicalEditor()` features. Saat ini ada 2 komponen admin kustom (`BrandLogo`, `BrandIcon`), dan rich text butuh 23 komponen bawaan.
 
 Prosedur (pernah dipakai, terbukti berhasil):
 
@@ -67,7 +67,7 @@ export async function GET() {
 2. Jalankan dev server, lalu `curl http://localhost:3000/api/dev-generate-importmap`
 3. **Hapus rute itu** — jangan sampai ikut ke produksi.
 
-Hasilnya `src/app/(payload)/admin/importMap.js` berisi 25 entri: 24 dari `@payloadcms/richtext-lexical` + 1 `CollectionCards` dari `@payloadcms/next/rsc`.
+Hasilnya `src/app/(payload)/admin/importMap.js` berisi 26 entri: 23 dari `@payloadcms/richtext-lexical`, 2 komponen brand (`BrandLogo`, `BrandIcon`), dan 1 `CollectionCards` dari `@payloadcms/next/rsc`.
 
 ## Kenapa import map wajib ada
 

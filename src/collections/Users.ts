@@ -25,8 +25,8 @@ export const Users: CollectionConfig = {
       required: true,
       defaultValue: 'editor',
       options: [
-        { label: 'Admin — akses penuh', value: 'admin' },
-        { label: 'Editor — kelola konten', value: 'editor' },
+        { label: 'Admin: akses penuh', value: 'admin' },
+        { label: 'Editor: kelola konten', value: 'editor' },
       ],
       access: {
         // Editor tidak boleh menaikkan perannya sendiri.

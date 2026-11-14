@@ -37,8 +37,8 @@ export const Redirects: CollectionConfig = {
       type: 'select',
       defaultValue: '301',
       options: [
-        { label: '301 — permanen', value: '301' },
-        { label: '302 — sementara', value: '302' },
+        { label: '301: permanen', value: '301' },
+        { label: '302: sementara', value: '302' },
       ],
     },
     { name: 'enabled', label: 'Aktif', type: 'checkbox', defaultValue: true },

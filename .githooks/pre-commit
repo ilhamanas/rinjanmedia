@@ -1,0 +1,19 @@
+#!/bin/sh
+# Penjaga commit: menolak commit bila lint atau typecheck gagal.
+#
+# Dipasang lewat `core.hooksPath`, bukan husky, supaya tidak menambah dependency.
+# Setelah clone baru, aktifkan sekali dengan:
+#   git config core.hooksPath .githooks
+#
+# Build penuh sengaja TIDAK dijalankan di sini: `next build` butuh PostgreSQL
+# hidup dan puluhan detik, terlalu berat untuk setiap commit. Build tetap
+# dijalankan manual sebelum push (lihat AGENTS.md §9.3).
+set -e
+
+echo "→ lint"
+npm run lint
+
+echo "→ typecheck"
+npm run typecheck
+
+echo "✓ pengecekan commit lulus"

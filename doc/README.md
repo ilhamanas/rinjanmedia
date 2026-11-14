@@ -12,7 +12,8 @@ Semua dokumentasi teknis dan produk proyek Rinjan Media berada di folder ini. Ro
 |---|---|---|
 | [`PRD.md`](./PRD.md) | Kebutuhan produk, ruang lingkup, arsitektur, kriteria penerimaan, risiko, estimasi | Draft |
 | [`DOCUMENTATION.md`](./DOCUMENTATION.md) | Setup lokal, deploy VPS, backup/restore, monitoring, troubleshooting, ADR | Draft |
-| [`design-tokens.md`](./design-tokens.md) | Palet brand, aturan kontras WCAG, tipografi, state aksesibilitas | Final |
+| [`design-tokens.md`](./design-tokens.md) | Palet brand, aturan kontras WCAG, tipografi, state aksesibilitas (situs publik) | Final |
+| [`design-admin.md`](./design-admin.md) | Tema panel `/admin`: peran warna, ramp netral & aksen, kontras terukur dua tema, override elevation gelap, kontrol form, logo | Final |
 
 ## Architecture Decision Records
 
@@ -40,7 +41,7 @@ Dokumen baru **wajib** dibuat di folder ini dengan format `kebab-case.md` dan pr
 | `guide-*` | Panduan operasional | `guide-deploy-staging.md` |
 | `audit-*` | Hasil audit | `audit-lighthouse-2026-11.md` |
 | `api-*` | Dokumentasi API | `api-leads-endpoint.md` |
-| `design-*` | Design system & token | `design-tokens.md` |
+| `design-*` | Design system & token | `design-tokens.md`, `design-admin.md` |
 | `notes-*` | Catatan riset/eksplorasi | `notes-riset-cms.md` |
 
 ### Header wajib setiap dokumen baru
