@@ -271,6 +271,9 @@ Cacat bawaan Payload yang ditemukan dan diperbaiki:
 | 14 Nov 2026 | Ditemukan: `:where()` TIDAK melindungi state error, karena urutan cascade layer mengalahkan specificity. Diperbaiki dengan `.field-type:not(.error)` |
 | 14 Nov 2026 | Import map diperbarui jadi 26 entri (2 komponen brand); `doc/adr-002` dikoreksi dari "25 entri, tanpa komponen kustom" |
 | 14 Nov 2026 | Dokumen baru: `doc/design-admin.md` |
+| 14 Nov 2026 | Repo git diinisialisasi ulang, remote `origin` = `git@github.com:ilhamanas/rinjanmedia.git`. Commit Fase 3 di-push ke `main` di atas commit awal `master` |
+| 14 Nov 2026 | Hook pre-commit (`.githooks/pre-commit`) menolak commit bila `lint` atau `typecheck` gagal. Tanpa husky, cukup `core.hooksPath` |
+| 14 Nov 2026 | `.gitignore` diperluas: kunci SSH (`rinjanmedia`, `*.pem`, `id_ed25519`) sebelumnya tidak ter-ignore |
 
 ---
 

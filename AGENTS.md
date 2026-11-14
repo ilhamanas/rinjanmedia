@@ -254,6 +254,22 @@ npm run build
 ```
 Ketiganya harus lulus. Jangan commit kode yang gagal build.
 
+**Hook pre-commit otomatis.** `lint` dan `typecheck` sudah dipasang sebagai hook git di `.githooks/pre-commit`, jadi commit ditolak bila keduanya gagal. Tidak memakai husky, hanya `core.hooksPath`, supaya tidak menambah dependency.
+
+Setelah clone baru, aktifkan sekali:
+
+```powershell
+git config core.hooksPath .githooks
+```
+
+`npm run build` sengaja **tidak** dijalankan di hook: `next build` butuh PostgreSQL hidup dan puluhan detik, terlalu berat untuk setiap commit. Jalankan manual sebelum push.
+
+Melewati hook (hanya bila benar-benar perlu, mis. commit dokumentasi saat DB mati):
+
+```powershell
+git commit --no-verify
+```
+
 > **`npm`, bukan `pnpm`.** `pnpm` gagal di mesin ini (install script diblokir, `corepack enable` EPERM). Semua contoh `pnpm` di dokumen ini harus dijalankan sebagai `npm`.
 
 ---
