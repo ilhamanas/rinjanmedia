@@ -105,9 +105,9 @@ export function NavShellClient({
           </span>
           <span className="rinjan-nav__brand-name">{siteName}</span>
           <button
-            aria-label={navOpen ? 'Ciutkan menu' : 'Buka menu'}
+            aria-label="Sembunyikan menu"
             className="rinjan-nav__collapse"
-            onClick={() => setNavOpen(!navOpen)}
+            onClick={() => setNavOpen(false)}
             tabIndex={navOpen ? 0 : -1}
             type="button"
           >
@@ -122,7 +122,7 @@ export function NavShellClient({
               viewBox="0 0 24 24"
               width="16"
             >
-              <path d={navOpen ? 'M15 6l-6 6 6 6' : 'M9 6l6 6-6 6'} />
+              <path d="M15 6l-6 6 6 6" />
             </svg>
           </button>
         </div>

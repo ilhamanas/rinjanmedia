@@ -310,6 +310,27 @@
     overflow: hidden;
   }
 
+  /* Payload punya tombol buka/tutup sendiri (chip di pojok kiri atas
+     template). Saat sidebar terbuka, tombol itu duplikat dengan tombol di
+     kotak identitas, jadi disembunyikan. Saat sidebar tertutup, kelas ini
+     hilang dan chip muncul kembali sebagai hamburger, menjadi satu-satunya
+     jalan membuka sidebar. */
+  .nav-toggler--is-open {
+    display: none;
+  }
+
+  /* Batas chip hamburger juga batas kontrol: garis bawaan elevation-150
+     hanya 1.36:1 di tema terang. Token kontrol memberi 3.85:1 (terang) dan
+     4.52:1 (gelap). Hover butuh aturan sendiri karena layer ini menang atas
+     payload-default tanpa melihat specificity. */
+  .hamburger {
+    box-shadow: 0 0 0 1px var(--rinjan-control-border);
+  }
+
+  .hamburger:hover {
+    box-shadow: 0 0 0 1px var(--rinjan-control-border-hover);
+  }
+
   .rinjan-nav__brand {
     display: flex;
     align-items: center;

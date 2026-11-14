@@ -145,7 +145,7 @@ requirement/
 | 3.9 | Audit aksesibilitas (keyboard, kontras, aria) | 🟡 | Situs publik + panel admin sudah diaudit dengan skrip terukur; audit penuh (Lighthouse/axe) belum |
 | 3.10 | **Tema panel admin sesuai brand Rinjan** | ✅ | `src/app/(payload)/custom.css`. Detail: `doc/design-admin.md` |
 | 3.11 | Sidebar biru + tema gelap default | ✅ | Gradien `#006dbc`→`#0060a5`, shell kartu rounded, item aktif berlatar putih. `doc/adr-003-sidebar-biru-tema-gelap.md` |
-| 3.13 | Navigasi kustom dengan ikon (`admin.components.Nav`) | ✅ | `BrandNav` + `NavShellClient`. Perilaku keyboard memakai ulang `useNav`, `inert`, `Link`, `groupNavItems`. Diuji: 1 item aktif per rute, 0/20 Tab masuk nav tertutup |
+| 3.13 | Navigasi kustom dengan ikon (`admin.components.Nav`) | ✅ | `BrandNav` + `NavShellClient`. Perilaku keyboard memakai ulang `useNav`, `inert`, `Link`, `groupNavItems`. Diuji: 1 item aktif per rute, 0/20 Tab masuk nav tertutup, 1 tombol buka/tutup |
 | 3.12 | Kartu statistik dashboard (angka dari DB) | ✅ | Komponen `AdminStats` via `beforeDashboard`; import map 26→27 entri. Angka diverifikasi sama dengan `/api/*` |
 
 ### Hasil kerja 3.10: tema panel admin
@@ -292,6 +292,9 @@ Cacat bawaan Payload yang ditemukan dan diperbaiki:
 | 14 Nov 2026 | Perilaku keyboard TIDAK ditulis ulang: `useNav`, `inert`, `tabIndex -1`, `Link`, `groupNavItems` dipakai ulang dari Payload |
 | 14 Nov 2026 | Risiko diuji, bukan diasumsikan: 9 rute punya tepat 1 item aktif; 0/20 langkah Tab masuk nav tertutup; `.focus()` paksa ditolak |
 | 14 Nov 2026 | Import map 27 → 28 entri setelah Nav kustom |
+| 15 Nov 2026 | Dua tombol tutup sidebar (ours + chip bawaan Payload) → chip disembunyikan selama nav terbuka lewat `.nav-toggler--is-open { display: none }`; saat tertutup chip kembali jadi hamburger |
+| 15 Nov 2026 | Uji buka/tutup memakai mouse sungguhan (`Input.dispatchMouseEvent`) karena `element.click()` melewati hit-testing; visibilitas dihitung dengan `checkVisibility({ checkOpacity: true })` |
+| 15 Nov 2026 | Batas chip hamburger dinaikkan ke token kontrol: 1.36:1 → 3.85:1 (terang) / 4.52:1 (gelap) |
 
 ---
 

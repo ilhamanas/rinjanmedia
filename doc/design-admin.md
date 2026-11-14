@@ -402,7 +402,31 @@ Perilaku keyboard tidak ditulis dari nol. Semuanya memakai kode Payload:
 |---|---|---|
 | Deteksi item aktif dobel | 9 rute, hitung `.rinjan-nav__link--active` | tepat 1 per halaman, 0 di dashboard |
 | Tab masuk menu tersembunyi | 20 langkah Tab di viewport 900px | **0/20** masuk; `.focus()` paksa juga ditolak |
-| Tombol ciutkan tidak bekerja | klik + baca kelas `nav--nav-open` | berubah true -> false |
+| Dua tombol tutup terlihat | hitung kontrol yang `checkVisibility()` | 1 saat terbuka, 1 saat tertutup |
+| Sidebar tertutup tanpa jalan kembali | klik mouse sungguhan di chip hamburger | terbuka kembali |
+
+### Satu kontrol buka/tutup
+
+Payload sudah merender tombol buka/tutup sendiri: chip kecil di pojok kiri atas template, di luar `<aside>`. Komponen kita juga punya tombol di kotak identitas. Dua-duanya sempat tampil bersamaan.
+
+Aturannya sekarang:
+
+| Keadaan | Yang terlihat |
+|---|---|
+| Sidebar terbuka | tombol `Sembunyikan menu` di kotak identitas; chip Payload `display: none` |
+| Sidebar tertutup | chip Payload berubah jadi ikon hamburger; tombol kita ikut hilang bersama sidebar |
+
+Chip disembunyikan lewat kelas yang sudah disediakan Payload sendiri, bukan `:has()`:
+
+```css
+.nav-toggler--is-open { display: none; }
+```
+
+Nama kelas itu berarti "nav sedang terbuka", jadi chip otomatis muncul lagi begitu sidebar ditutup. Karena chip ikut terklik, sidebar tidak bisa terkunci dalam keadaan tertutup, dan muat ulang selalu mengembalikannya terbuka (perilaku `NavProvider` Payload di layar lebar).
+
+Batas chip juga dinaikkan ke token kontrol (`#808285` = 3.85:1) karena garis bawaan `elevation-150` hanya 1.36:1 di tema terang.
+
+**Cara menguji hal ini penting.** `element.click()` di DevTools melewati hit-testing, jadi tombol yang tertutup elemen lain tetap "bisa diklik". Uji memakai `Input.dispatchMouseEvent` pada koordinat tombol, dan menghitung visibilitas dengan `checkVisibility({ checkOpacity: true })` supaya tombol di dalam sidebar ber-`opacity: 0` tidak dihitung terlihat.
 
 Aturan aktif **wajib** meniru Payload apa adanya:
 
