@@ -247,11 +247,53 @@ Saat ini import map berisi **26 entri**: 23 dari `@payloadcms/richtext-lexical`,
 
 ---
 
-## 10. Batasan yang Diketahui
+## 10. Sidebar Biru dan Tema Gelap Default
 
+Panel memakai sidebar biru brand solid dan tema gelap sebagai default, mengikuti referensi dashboard modern. Tiga hal harus ditangani bersamaan karena saling mengunci:
+
+| Perubahan | Nilai | Alasan |
+|---|---|---|
+| Latar sidebar | `#275686` | Putih di atasnya 7.60:1; di atas `#3171B3` hanya 5.07:1, terlalu tipis untuk teks nav 17.5px |
+| Teks nav | putih | 7.60:1 |
+| Indikator nav aktif | **putih** | Indikator biru `#3171B3` hanya **1.50:1** di atas sidebar biru, praktis hilang |
+| Cincin fokus di sidebar | **putih** | Cincin global `#6398cf` hanya **2.51:1** di atas biru, gagal ambang 3:1 |
+| Hover nav | latar `#1e3f62` | 10.81:1, dan menggantikan garis bawah yang sulit dibaca di atas biru |
+| Grid kartu dashboard | 3 kolom | Bawaan 5 kolom terlalu sempit untuk tampil sebagai pintasan |
+| Radius kartu / tombol | 12px / 10px | Mengikuti referensi; tetap di bawah 18px agar tidak jadi pil (R-11) |
+
+### Elemen sidebar yang mudah terlewat
+
+Empat elemen memakai warna teks global, bukan warna nav, sehingga tetap gelap di atas biru:
+
+| Elemen | Gejala | Perbaikan |
+|---|---|---|
+| `.nav-toggler` (ciutkan nav) | Ikon `#272727` di tema terang | `stroke` dan `color` dipaksa putih |
+| `.hamburger` | **Kotak putih solid** karena `background: var(--theme-bg)`, dan `:focus { outline: none }` | Latar transparan, garis putih 45%, cincin fokus dikembalikan |
+| Ikon logout `.nav__controls` | Ikon `#272727` di tema terang | `stroke` putih |
+| Chevron `.nav-group__indicator` | `#cdcecf` dan `#3a3a3a`, nyaris tak terlihat | `stroke` putih |
+
+Semua ini lolos dari pemeriksaan otomatis pertama dan hanya ketahuan dari screenshot. Karena itu verifikasi visual tetap wajib, bukan cukup assertion.
+
+### Tema gelap default tanpa mengunci toggle
+
+`admin.theme: 'dark'` di `payload.config.ts` **menghilangkan** pilihan tema sepenuhnya (Payload membatasi panel ke satu tema). Yang dipakai adalah cookie `payload-theme` yang dibaca `ThemeProvider`:
+
+```ts
+if (pathname.startsWith('/admin') && !request.cookies.has('payload-theme')) {
+  res.cookies.set('payload-theme', 'dark', { path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' })
+}
+```
+
+Cookie hanya ditulis bila belum ada, jadi pilihan pengguna tidak pernah ditimpa. Pilihan tema ada di `/admin/account` sebagai radio group Automatic / Light / Dark, dan ketiganya tetap berfungsi.
+
+---
+
+## 11. Batasan yang Diketahui
 | Batasan | Sebab | Dampak |
 |---|---|---|
 | `--theme-success-500` tidak bisa dipakai untuk teks di mode gelap | Tidak ada di tabel flip Payload | Harus memakai `--theme-success-600` |
 | Override border kontrol memakai daftar selector eksplisit | Payload tidak punya variabel border khusus kontrol | Kontrol baru dari plugin pihak ketiga tidak otomatis ikut tertata |
 | Payload menutup nav pada viewport ≤1440px | `$breakpoint-l-width: 1440px` bawaan Payload | Di 1440px nav tampak tertutup; itu perilaku Payload, bukan bug tema |
 | Field tampak abu-abu sebelum hidrasi | Payload menonaktifkan field sampai izin selesai dimuat | Bukan bug; screenshot harus menunggu `!input.disabled && !input.readOnly` |
+| Indikator nav aktif hanya muncul di halaman koleksi | Dashboard tidak punya link aktif | Uji indikator harus di `/admin/collections/*`, bukan `/admin` |
+| Pilihan tema ada di `/admin/account`, bukan tombol header | Desain bawaan Payload | Untuk menguji toggle, buka halaman akun |

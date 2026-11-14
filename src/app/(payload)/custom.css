@@ -99,6 +99,15 @@
        #1e1e1e). */
     --rinjan-control-border: #808285;
     --rinjan-control-border-hover: #69696a;
+
+    /* Sidebar biru brand. Dipakai #275686 (bukan #3171B3) karena teks nav
+       berukuran 17.5px dan butuh margin kontras: putih di atas #275686 = 7.60:1,
+       sedangkan di atas #3171B3 hanya 5.07:1. */
+    --rinjan-nav-bg: #275686;
+    --rinjan-nav-bg-hover: #1e3f62;
+    --rinjan-nav-text: #ffffff;
+    --rinjan-nav-text-muted: #bcd2e9;
+    --rinjan-nav-indicator: #ffffff;
   }
 
   /* Elevation gelap di-override eksplisit, tidak sekadar dibalik seperti
@@ -235,39 +244,117 @@
     box-shadow: 0 0 0 2px var(--theme-success-600);
   }
 
-  /* --- Navigasi ----------------------------------------------------------- */
+  /* --- Navigasi -----------------------------------------------------------
+     Sidebar memakai biru brand solid, seperti referensi dashboard. Konsekuensi
+     yang wajib ditangani bersamaan:
+
+     1. `.nav__link-indicator` bawaan biru #3171B3 hanya 1.50:1 di atas sidebar
+        biru, jadi praktis hilang. Diganti putih (7.60:1).
+     2. Cincin fokus global #6398cf hanya 2.51:1 di atas sidebar, gagal ambang
+        3:1 untuk indikator non-teks. Di dalam sidebar cincinnya dibuat putih.
+     3. Teks nav dan label grup harus putih, bukan warna elevation yang
+        dirancang untuk latar terang. */
   .nav {
-    border-right-color: var(--theme-elevation-100);
+    background-color: var(--rinjan-nav-bg);
+    border-right-color: transparent;
+  }
+
+  .nav a.nav__link,
+  .nav__label,
+  .nav-group__toggle {
+    color: var(--rinjan-nav-text);
   }
 
   .nav-group__toggle:hover,
   .nav-group__toggle:focus-visible {
-    color: var(--theme-success-700);
+    color: var(--rinjan-nav-text);
+  }
+
+  .nav-group__toggle:hover .stroke,
+  .nav-group__toggle:focus-visible .stroke {
+    stroke: var(--rinjan-nav-text);
   }
 
   /* Payload mematikan outline pada toggle grup nav dan hanya mengandalkan
      perubahan warna. Warna saja bukan indikator fokus yang cukup (WCAG 2.4.11
-     dan R-32), jadi cincin fokus dikembalikan. */
-  .nav-group__toggle:focus-visible {
-    outline: var(--accessibility-outline);
-    outline-offset: var(--accessibility-outline-offset);
+     dan R-32), jadi cincin fokus dikembalikan. Putih, karena cincin biru tidak
+     terlihat di atas sidebar biru. */
+  .nav-group__toggle:focus-visible,
+  .nav a.nav__link:focus-visible {
+    outline: 2px solid var(--rinjan-nav-indicator);
+    outline-offset: 2px;
     border-radius: 4px;
   }
 
+  /* Elemen sidebar yang memakai warna teks global, bukan warna nav. Tanpa ini
+     tombol ciutkan dan ikon logout tetap #272727 (tema terang) di atas sidebar
+     biru, sehingga praktis tidak terlihat. */
+  .nav-toggler,
+  .nav-toggler .stroke,
+  .nav__controls a,
+  .nav__controls button,
+  .nav__controls .stroke,
+  .nav-group__indicator,
+  .nav-group__indicator .stroke,
+  .nav-group__toggle .stroke {
+    color: var(--rinjan-nav-text);
+    stroke: var(--rinjan-nav-text);
+  }
+
+  .nav-toggler:hover,
+  .nav__controls a:hover,
+  .nav__controls button:hover,
+  .nav-group__toggle:hover .stroke {
+    color: var(--rinjan-nav-text);
+    stroke: var(--rinjan-nav-text);
+  }
+
+  /* Chevron grup nav: bawaan memakai elevation-1000/400 yang nyaris tak terlihat
+     di atas biru. */
+  .nav-group__toggle svg,
+  .nav-group__indicator svg {
+    color: var(--rinjan-nav-text);
+  }
+
+  /* Tombol hamburger (ciutkan nav) memakai --theme-bg, sehingga di tema terang
+     tampil sebagai kotak putih solid di atas sidebar biru. Selain itu Payload
+     menulis `.hamburger:focus { outline: none }` sehingga tidak ada indikator
+     fokus sama sekali. */
+  .hamburger {
+    background-color: transparent;
+    color: var(--rinjan-nav-text);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 45%);
+    border-radius: 6px;
+  }
+
+  .hamburger:hover {
+    background-color: var(--rinjan-nav-bg-hover);
+    box-shadow: 0 0 0 1px var(--rinjan-nav-text);
+  }
+
+  .hamburger:focus-visible {
+    outline: 2px solid var(--rinjan-nav-indicator);
+    outline-offset: 2px;
+  }
+
+  /* Hover pada link nav: latar lebih gelap, bukan garis bawah. Payload memakai
+     text-decoration underline yang di atas sidebar biru sulit dibaca. */
+  .nav a.nav__link:hover {
+    text-decoration: none;
+    background-color: var(--rinjan-nav-bg-hover);
+    border-radius: 6px;
+  }
+
   .nav__link-indicator {
-    background: var(--theme-success-600);
+    background: var(--rinjan-nav-indicator);
     width: 3px;
   }
 
-  .nav__link:has(.nav__link-indicator) {
-    color: var(--theme-success-700);
-  }
-
+  /* Link aktif: putih penuh. Token success tidak dipakai lagi di sini karena
+     semuanya biru dan tidak terbaca di atas sidebar biru. */
+  .nav__link:has(.nav__link-indicator),
   html[data-theme='dark'] .nav__link:has(.nav__link-indicator) {
-    /* --theme-success-400 di mode gelap memetakan ke --color-success-600,
-       yaitu biru brand #3171b3, dan hanya 3.60:1 di kanvas gelap.
-       --theme-success-600 di mode gelap jadi #6398cf (6.02:1). */
-    color: var(--theme-success-600);
+    color: var(--rinjan-nav-text);
   }
 
   /* --- Logo dan ikon brand -------------------------------------------------
@@ -298,9 +385,17 @@
     object-fit: contain;
   }
 
-  /* --- Kartu -------------------------------------------------------------- */
+  /* --- Kartu --------------------------------------------------------------
+     Referensi dashboard memakai kartu besar dengan radius lega. Kartu koleksi
+     bawaan Payload memakai --cols: 5 sehingga sempit; diturunkan ke 3 supaya
+     tiap kartu lebih besar dan terbaca sebagai pintasan, bukan tabel. */
   .card {
-    border-radius: 8px;
+    border-radius: 12px;
+  }
+
+  .collections__card-list {
+    --cols: 3;
+    gap: 16px;
   }
 
   .card--has-onclick:hover {
@@ -311,6 +406,12 @@
   .card__actions .btn__icon:hover {
     border-color: var(--theme-success-500);
     color: var(--theme-success-700);
+  }
+
+  /* Tombol: radius lebih lega mengikuti kartu, tetap di bawah 12px supaya
+     tidak jadi pil (R-11). */
+  .btn {
+    border-radius: 10px;
   }
 
   /* --- Halaman login -------------------------------------------------------

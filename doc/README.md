@@ -21,6 +21,7 @@ Semua dokumentasi teknis dan produk proyek Rinjan Media berada di folder ini. Ro
 |---|---|---|
 | [`adr-001-payload-di-dalam-nextjs.md`](./adr-001-payload-di-dalam-nextjs.md) | Payload 3 dijalankan di dalam proses Next.js (bukan server terpisah) — termasuk konsekuensi route group dan `proxy.ts` | Final |
 | [`adr-002-workaround-cli-payload.md`](./adr-002-workaround-cli-payload.md) | CLI Payload rusak di mesin ini (`tsx` + `undici`); import map di-generate lewat rute sementara di Next.js, tipe ditulis manual | Final |
+| [`adr-003-sidebar-biru-tema-gelap.md`](./adr-003-sidebar-biru-tema-gelap.md) | Panel admin memakai bahasa visual dashboard modern (sidebar biru, gelap default) tanpa menyalin konten referensi; kartu statistik dipisah ke langkah berikutnya | Final |
 
 ## Panduan Operasional
 

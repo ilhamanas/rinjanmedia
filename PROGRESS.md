@@ -144,6 +144,8 @@ requirement/
 | 3.8 | Responsif semua halaman | 🟡 | Diuji 360 dan 1440; 768 dan 1920 belum |
 | 3.9 | Audit aksesibilitas (keyboard, kontras, aria) | 🟡 | Situs publik + panel admin sudah diaudit dengan skrip terukur; audit penuh (Lighthouse/axe) belum |
 | 3.10 | **Tema panel admin sesuai brand Rinjan** | ✅ | `src/app/(payload)/custom.css`. Detail: `doc/design-admin.md` |
+| 3.11 | Sidebar biru + tema gelap default | ✅ | `#275686` + cookie `payload-theme`. Keputusan: `doc/adr-003-sidebar-biru-tema-gelap.md` |
+| 3.12 | Kartu statistik dashboard (angka dari DB) | ⬜ | Butuh komponen `beforeDashboard` + regenerasi import map. Dijadwalkan setelah 3.11 stabil |
 
 ### Hasil kerja 3.10: tema panel admin
 
@@ -274,6 +276,11 @@ Cacat bawaan Payload yang ditemukan dan diperbaiki:
 | 14 Nov 2026 | Repo git diinisialisasi ulang, remote `origin` = `git@github.com:ilhamanas/rinjanmedia.git`. Commit Fase 3 di-push ke `main` di atas commit awal `master` |
 | 14 Nov 2026 | Hook pre-commit (`.githooks/pre-commit`) menolak commit bila `lint` atau `typecheck` gagal. Tanpa husky, cukup `core.hooksPath` |
 | 14 Nov 2026 | `.gitignore` diperluas: kunci SSH (`rinjanmedia`, `*.pem`, `id_ed25519`) sebelumnya tidak ter-ignore |
+| 14 Nov 2026 | **Sidebar biru + gelap default (3.11):** `#275686` dengan teks putih 7.60:1. Indikator nav aktif jadi putih karena biru hanya 1.50:1 di atas sidebar |
+| 14 Nov 2026 | Diperbaiki: cincin fokus di sidebar putih (biru hanya 2.51:1, gagal 3:1) |
+| 14 Nov 2026 | Diperbaiki: `.hamburger` tampil sebagai kotak putih solid dan `:focus{outline:none}`; toggler, logout, dan chevron juga masih gelap di atas biru |
+| 14 Nov 2026 | Tema gelap default lewat cookie `payload-theme` di `proxy.ts`, bukan `admin.theme:'dark'` yang menghilangkan toggle |
+| 14 Nov 2026 | Dokumen baru: `doc/adr-003-sidebar-biru-tema-gelap.md` |
 
 ---
 
