@@ -100,24 +100,38 @@
     --rinjan-control-border: #808285;
     --rinjan-control-border-hover: #69696a;
 
-    /* Sidebar biru brand. Dipakai #275686 (bukan #3171B3) karena teks nav
-       berukuran 17.5px dan butuh margin kontras: putih di atas #275686 = 7.60:1,
-       sedangkan di atas #3171B3 hanya 5.07:1. */
-    --rinjan-nav-bg: #275686;
-    --rinjan-nav-bg-hover: #1e3f62;
+    /* Sidebar biru terang mengikuti referensi dashboard.
+       Dua token, bukan satu, karena tidak ada satu biru yang lolos di kedua
+       peran: putih di atas biru terang = rendah, sedangkan biru terang sebagai
+       TEKS di atas kartu gelap justru lolos. Jadi:
+         - permukaan (latar sidebar) memakai biru lebih gelap #006dbc
+           (putih 5.37:1, teks muted 4.80:1)
+         - aksen teks di atas gelap memakai #0099eb (5.82:1 di kartu)
+       Warna asli referensi (#0099eb) TIDAK dipakai sebagai latar sidebar:
+       putih di atasnya hanya 3.11:1 dan gagal AA. */
+    --rinjan-nav-bg: #006dbc;
+    --rinjan-nav-bg-hover: #005aa8;
     --rinjan-nav-text: #ffffff;
-    --rinjan-nav-text-muted: #bcd2e9;
+    --rinjan-nav-text-muted: #e8f4fd;
     --rinjan-nav-indicator: #ffffff;
+
+    /* Kanvas gelap mengikuti referensi: lebih pekat daripada sebelumnya. */
+    --rinjan-canvas: #0a0a0a;
+    --rinjan-surface: #161616;
+    --rinjan-border: #292929;
+    --rinjan-accent: #0099eb;
   }
 
   /* Elevation gelap di-override eksplisit, tidak sekadar dibalik seperti
      bawaan Payload. Pembalikan otomatis membuat elev-400/450 (teks informatif)
      hanya 3.7-4.2:1 di kanvas gelap. */
   html[data-theme='dark'] {
-    --theme-elevation-0: var(--color-base-900);
-    --theme-elevation-50: var(--color-base-850);
-    --theme-elevation-100: var(--color-base-800);
-    --theme-elevation-150: var(--color-base-750);
+    /* Kanvas dan kartu memakai nilai referensi (#0a0a0a / #161616), lebih
+       pekat dari ramp netral. Teks putih di atasnya makin lega. */
+    --theme-elevation-0: var(--rinjan-canvas);
+    --theme-elevation-50: var(--rinjan-surface);
+    --theme-elevation-100: #1f1f1f;
+    --theme-elevation-150: var(--rinjan-border);
     --theme-elevation-200: var(--color-base-700);
     --theme-elevation-250: var(--color-base-650);
     --theme-elevation-300: var(--color-base-600);
@@ -245,24 +259,60 @@
   }
 
   /* --- Navigasi -----------------------------------------------------------
-     Sidebar memakai biru brand solid, seperti referensi dashboard. Konsekuensi
+     Sidebar biru terang mengambang seperti referensi dashboard. Konsekuensi
      yang wajib ditangani bersamaan:
 
-     1. `.nav__link-indicator` bawaan biru #3171B3 hanya 1.50:1 di atas sidebar
-        biru, jadi praktis hilang. Diganti putih (7.60:1).
-     2. Cincin fokus global #6398cf hanya 2.51:1 di atas sidebar, gagal ambang
+     1. `.nav__link-indicator` bawaan biru hanya 1.5:1 di atas sidebar biru,
+        jadi praktis hilang. Diganti putih.
+     2. Cincin fokus global #6398cf hanya 2.5:1 di atas sidebar, gagal ambang
         3:1 untuk indikator non-teks. Di dalam sidebar cincinnya dibuat putih.
      3. Teks nav dan label grup harus putih, bukan warna elevation yang
         dirancang untuk latar terang. */
   .nav {
     background-color: var(--rinjan-nav-bg);
     border-right-color: transparent;
+    /* Sidebar mengambang: radius di dalam, dengan jarak dari tepi jendela. */
+    margin: 12px 0 12px 12px;
+    height: calc(100vh - 24px);
+    border-radius: 24px;
+    overflow: hidden;
+  }
+
+  /* Tombol "ciutkan" di pojok kanan atas sidebar, seperti referensi. */
+  .template-default__nav-toggler-wrapper {
+    justify-content: flex-end;
+    padding-right: 12px;
   }
 
   .nav a.nav__link,
   .nav__label,
   .nav-group__toggle {
     color: var(--rinjan-nav-text);
+  }
+
+  /* Referensi memakai item nav yang lega dengan sasaran klik besar. Bawaan
+     Payload hanya padding-block 2.5px sehingga terasa sesak. */
+  .nav a.nav__link {
+    padding-block: 9px;
+    padding-inline: 12px;
+    border-radius: 10px;
+    line-height: 22px;
+    font-size: 15px;
+  }
+
+  .nav-group__toggle {
+    padding-block: 6px;
+    padding-inline: 12px;
+    border-radius: 10px;
+    margin-bottom: 2px;
+  }
+
+  .nav__label {
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    padding-inline: 12px;
   }
 
   .nav-group__toggle:hover,
@@ -342,12 +392,15 @@
   .nav a.nav__link:hover {
     text-decoration: none;
     background-color: var(--rinjan-nav-bg-hover);
-    border-radius: 6px;
+    border-radius: 10px;
   }
 
   .nav__link-indicator {
     background: var(--rinjan-nav-indicator);
     width: 3px;
+    inset-inline-start: 0;
+    height: 22px;
+    border-radius: 3px;
   }
 
   /* Link aktif: putih penuh. Token success tidak dipakai lagi di sini karena
@@ -386,11 +439,19 @@
   }
 
   /* --- Kartu --------------------------------------------------------------
-     Referensi dashboard memakai kartu besar dengan radius lega. Kartu koleksi
-     bawaan Payload memakai --cols: 5 sehingga sempit; diturunkan ke 3 supaya
-     tiap kartu lebih besar dan terbaca sebagai pintasan, bukan tabel. */
+     Referensi memakai kartu besar dengan radius lega dan permukaan lebih
+     terang dari kanvas. Kartu koleksi bawaan Payload memakai --cols: 5
+     sehingga sempit; diturunkan ke 3 supaya tiap kartu terbaca sebagai
+     pintasan, bukan tabel. */
   .card {
-    border-radius: 12px;
+    border-radius: 16px;
+    background-color: var(--rinjan-surface);
+    border-color: var(--rinjan-border);
+  }
+
+  html[data-theme='light'] .card {
+    background-color: var(--theme-elevation-50);
+    border-color: var(--theme-elevation-150);
   }
 
   .collections__card-list {
@@ -399,8 +460,8 @@
   }
 
   .card--has-onclick:hover {
-    border-color: var(--theme-success-300);
-    box-shadow: 0 2px 8px -2px rgb(49 113 179 / 18%);
+    border-color: var(--rinjan-accent);
+    box-shadow: 0 2px 8px -2px rgb(0 153 235 / 22%);
   }
 
   .card__actions .btn__icon:hover {
@@ -408,10 +469,10 @@
     color: var(--theme-success-700);
   }
 
-  /* Tombol: radius lebih lega mengikuti kartu, tetap di bawah 12px supaya
-     tidak jadi pil (R-11). */
+  /* Tombol: radius lega mengikuti kartu, tetap di bawah 18px supaya tidak jadi
+     pil (R-11). */
   .btn {
-    border-radius: 10px;
+    border-radius: 12px;
   }
 
   /* --- Halaman login -------------------------------------------------------

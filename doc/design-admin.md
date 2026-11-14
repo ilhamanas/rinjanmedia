@@ -249,17 +249,58 @@ Saat ini import map berisi **26 entri**: 23 dari `@payloadcms/richtext-lexical`,
 
 ## 10. Sidebar Biru dan Tema Gelap Default
 
-Panel memakai sidebar biru brand solid dan tema gelap sebagai default, mengikuti referensi dashboard modern. Tiga hal harus ditangani bersamaan karena saling mengunci:
+Panel memakai sidebar biru terang mengambang dan tema gelap pekat, mengikuti referensi dashboard modern.
 
-| Perubahan | Nilai | Alasan |
+### Palet yang diambil dari referensi
+
+Nilai asli referensi diambil dari CSS demo (`--brand: oklch(65% .17 240)` untuk varian biru), lalu dikonversi dan diukur. Kanvas dan permukaan memakai nilai referensi `#0a0a0a` / `#161616`, bukan ramp netral.
+
+| Token | Nilai | Peran |
 |---|---|---|
-| Latar sidebar | `#275686` | Putih di atasnya 7.60:1; di atas `#3171B3` hanya 5.07:1, terlalu tipis untuk teks nav 17.5px |
-| Teks nav | putih | 7.60:1 |
-| Indikator nav aktif | **putih** | Indikator biru `#3171B3` hanya **1.50:1** di atas sidebar biru, praktis hilang |
-| Cincin fokus di sidebar | **putih** | Cincin global `#6398cf` hanya **2.51:1** di atas biru, gagal ambang 3:1 |
-| Hover nav | latar `#1e3f62` | 10.81:1, dan menggantikan garis bawah yang sulit dibaca di atas biru |
-| Grid kartu dashboard | 3 kolom | Bawaan 5 kolom terlalu sempit untuk tampil sebagai pintasan |
-| Radius kartu / tombol | 12px / 10px | Mengikuti referensi; tetap di bawah 18px agar tidak jadi pil (R-11) |
+| `--rinjan-nav-bg` | `#006dbc` | Latar sidebar |
+| `--rinjan-nav-bg-hover` | `#005aa8` | Hover item nav |
+| `--rinjan-nav-text` | `#ffffff` | Teks nav |
+| `--rinjan-nav-text-muted` | `#e8f4fd` | Label grup |
+| `--rinjan-canvas` | `#0a0a0a` | Kanvas gelap |
+| `--rinjan-surface` | `#161616` | Permukaan kartu |
+| `--rinjan-border` | `#292929` | Garis kartu |
+| `--rinjan-accent` | `#0099eb` | Aksen teks di atas gelap |
+
+### Kenapa dua biru, bukan satu
+
+Warna biru asli referensi adalah `#0099eb`. Putih di atasnya hanya **3.11:1**, gagal AA. Tetapi `#0099eb` justru bagus sebagai **teks** di atas gelap (5.82:1 di kartu).
+
+Tidak ada satu biru yang lolos di kedua peran:
+
+| Kandidat | Putih di atasnya | Sebagai teks di kartu `#161616` |
+|---|---|---|
+| `#0099eb` (asli referensi) | **3.11 gagal** | 5.82 lolos |
+| `#0079c9` | 4.59 lolos | **3.95 gagal** |
+| `#006dbc` (dipakai) | **5.37 lolos** | 4.41 (tidak dipakai sebagai teks) |
+
+Jadi permukaan memakai `#006dbc` dan aksen teks memakai `#0099eb`.
+
+### Hasil ukur
+
+| Pasangan | Rasio | Min |
+|---|---|---|
+| Teks nav putih di `#006dbc` | 5.37:1 | 4.5:1 |
+| Label grup `#e8f4fd` di `#006dbc` | 4.80:1 | 4.5:1 |
+| Hover nav di `#005aa8` | 6.94:1 | 4.5:1 |
+| Indikator aktif putih (non-teks) | 5.37:1 | 3:1 |
+| Cincin fokus putih (non-teks) | 5.37:1 | 3:1 |
+| Aksen `#0099eb` di kartu `#161616` | 5.82:1 | 4.5:1 |
+| Aksen `#0099eb` di kanvas `#0a0a0a` | 6.37:1 | 4.5:1 |
+
+### Bentuk dan jarak
+
+| Elemen | Nilai | Alasan |
+|---|---|---|
+| Sidebar | `margin: 12px`, `border-radius: 24px` | Mengambang seperti referensi |
+| Item nav | padding `9px 12px`, radius 10px, font 15px | Bawaan Payload hanya `padding-block: 2.5px`, terasa sesak |
+| Label grup | 12px, uppercase, tracking `0.04em` | Membedakan tingkat hierarki |
+| Kartu | radius 16px, `#161616` | Mengikuti referensi |
+| Tombol | radius 12px | Tetap di bawah 18px agar tidak jadi pil (R-11) |
 
 ### Elemen sidebar yang mudah terlewat
 
