@@ -147,6 +147,7 @@ requirement/
 | 3.11 | Sidebar biru + tema gelap default | ✅ | Gradien `#006dbc`→`#0060a5`, shell kartu rounded, item aktif berlatar putih. `doc/adr-003-sidebar-biru-tema-gelap.md` |
 | 3.13 | Navigasi kustom dengan ikon (`admin.components.Nav`) | ✅ | `BrandNav` + `NavShellClient`. Perilaku keyboard memakai ulang `useNav`, `inert`, `Link`, `groupNavItems`. Diuji: 1 item aktif per rute, 0/20 Tab masuk nav tertutup, 1 tombol buka/tutup |
 | 3.12 | Kartu statistik dashboard (angka dari DB) | ✅ | Komponen `AdminStats` via `beforeDashboard`; import map 26→27 entri. Angka diverifikasi sama dengan `/api/*` |
+| 3.14 | **Penyelarasan visual dengan template referensi** | ✅ | Tiga permukaan (panel `#262626` / kartu `#161616` / chip), shell 95vh, sidebar rail 80px, halaman daftar jadi kartu, tombol aksi monokrom. Detail: `doc/design-admin.md` §13 |
 
 ### Hasil kerja 3.10: tema panel admin
 
@@ -295,6 +296,10 @@ Cacat bawaan Payload yang ditemukan dan diperbaiki:
 | 15 Nov 2026 | Dua tombol tutup sidebar (ours + chip bawaan Payload) → chip disembunyikan selama nav terbuka lewat `.nav-toggler--is-open { display: none }`; saat tertutup chip kembali jadi hamburger |
 | 15 Nov 2026 | Uji buka/tutup memakai mouse sungguhan (`Input.dispatchMouseEvent`) karena `element.click()` melewati hit-testing; visibilitas dihitung dengan `checkVisibility({ checkOpacity: true })` |
 | 15 Nov 2026 | Batas chip hamburger dinaikkan ke token kontrol: 1.36:1 → 3.85:1 (terang) / 4.52:1 (gelap) |
+| 15 Nov 2026 | **Penyelarasan 3.14:** tiga permukaan (panel/kartu/chip) menggantikan satu warna; shell 95vh (`min-height: 0` karena Payload memasang 100vh) |
+| 15 Nov 2026 | Sidebar: lebar 208px, rail 80px lewat `:has()` pada variabel `--nav-width` (kolom grid, bukan hanya lebar `.nav`), tinggi `100%` (bukan 100vh), padding `.nav__scroll` dipindah |
+| 15 Nov 2026 | Halaman daftar jadi kartu: judul 24px, CTA monokrom 36px/radius 8, pencarian pil 40px dengan ikon di dalam, header tabel kapital, belang baris dihapus |
+| 15 Nov 2026 | Tombol aksi pindah dari oranye ke monokrom seperti referensi; oranye tetap warna aksi situs publik |
 
 ---
 

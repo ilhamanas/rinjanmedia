@@ -15,22 +15,26 @@ Verifikator: `.verify/admin-ramp.mjs` (kontras), `.verify/admin-field-test.mjs` 
 
 ## 1. Peran Warna
 
-Panel admin memakai 3 peran inti + 1 aksen, sesuai batas R-29.
+Panel admin memakai 3 peran inti + 1 aksen, sesuai batas R-29. Peran ini mengikuti pembagian di template referensi: warna brand untuk identitas, tombol aksi monokrom.
 
 | Peran | Warna | Dipakai untuk | Alasan |
 |---|---|---|---|
-| Identitas + interaktif | biru `#3171B3` | cincin fokus, indikator nav aktif, selection, status sukses, tombol sekunder | Biru adalah warna terbanyak di CSS situs lama (16 kemunculan), jadi panel terasa milik Rinjan, bukan panel Payload generik |
-| Aksi utama | oranye `#D93A00` | **hanya** Publish, Simpan, Login | Satu warna aksi di seluruh panel; kalau oranye dipakai di banyak tempat, tidak ada lagi yang menonjol |
-| Netral | ramp `base-*` | permukaan, border, teks | Panel admin adalah alat kerja; netral menjaga konten tetap jadi fokus |
+| Identitas + interaktif | biru `#3171B3` | cincin fokus, indikator nav aktif, selection, status sukses, link | Biru adalah warna terbanyak di CSS situs lama (16 kemunculan), jadi panel terasa milik Rinjan, bukan panel Payload generik |
+| Aksi utama | monokrom `#171717` (terang) / `#FAFAFA` (gelap) | Publish, Simpan, Create New | Referensi memakai `--primary` monokrom untuk tombol dan menyimpan warna brand untuk identitas. Kontras teks 17.18:1 |
+| Netral | ramp `base-*` + tiga permukaan | panel kerja, kartu, chip | Panel admin adalah alat kerja; netral menjaga konten tetap jadi fokus |
 | Error / warning | merah & amber bawaan Payload | validasi, gagal simpan | **Sengaja tidak disentuh.** Merah berarti error; menggantinya dengan warna brand akan menghapus maknanya |
 
-### Kenapa oranye tombol bukan `#EB4101`
+Oranye brand `#D93A00` **tidak dipakai di panel admin**. Oranye tetap warna aksi situs publik; di panel, peran itu diambil tombol monokrom seperti referensi.
 
-Oranye asli logo hanya mencapai **3.97:1** dengan teks putih (gagal AA 4.5:1). Tombol solid memakai `#D93A00` = **4.61:1**. Hover `#B83000` = **6.07:1**, active `#A02A00`.
+### Kenapa tombol utama monokrom, bukan oranye
 
-### Kenapa cincin fokus biru, bukan oranye
+Versi sebelumnya memakai oranye `#D93A00` untuk semua aksi utama. Itu menyimpang dari referensi, yang tombolnya monokrom (hampir putih di tema gelap, hampir hitam di tema terang) dan hanya memakai warna brand untuk identitas dan elemen interaktif. Setelah panel disamakan dengan referensi, tombol ikut monokrom.
 
-Tombol utama panel ini oranye. Cincin fokus oranye di atas tombol oranye **tidak terlihat**. Biru memberi kontras 5.07:1 di atas putih dan 6.02:1 di kanvas gelap.
+Kontras tidak berkurang: teks `#171717` di atas `#FAFAFA` = **17.18:1**, jauh di atas AA.
+
+### Kenapa cincin fokus biru, bukan monokrom
+
+Cincin fokus monokrom akan menyatu dengan tombol monokrom. Biru memberi kontras 5.07:1 di atas putih dan 6.02:1 di kanvas gelap, jadi fokus selalu terlihat di atas tombol aksi mana pun.
 
 ---
 
@@ -296,15 +300,15 @@ Jadi permukaan memakai `#006dbc` dan aksen teks memakai `#0099eb`.
 
 | Elemen | Nilai | Alasan |
 |---|---|---|
-| Shell | `margin: 20px 16px`, `border-radius: 24px`, `height: calc(100vh - 40px)` | Referensi membungkus seluruh app dalam satu kartu mengambang |
-| Sidebar | Gradien `#006dbc` ke `#0060a5`, radius **hanya kiri** | Mengikuti `rounded-l-3xl` referensi |
-| Area kerja | `--theme-elevation-50` | Referensi memakai latar muted, bukan latar kanvas |
-| Topbar | Latar permukaan + garis bawah | Lengket seperti referensi |
-| Item nav | padding `9px 12px`, radius 12px, font 15px | Bawaan Payload hanya `padding-block: 2.5px` |
+| Shell | `margin: 24px 16px`, `border-radius: 24px`, `height: 95vh`, `min-height: 0` | Referensi membungkus seluruh app dalam satu kartu mengambang |
+| Sidebar | Gradien `#006dbc` ke `#0060a5`, radius **hanya kiri**, lebar `208px` | Mengikuti `rounded-l-3xl` dan `w-52` referensi |
+| Area kerja | `--rinjan-panel` (`#262626` gelap / `#f1f2f4` terang) | Referensi memakai latar muted yang berbeda dari kartu |
+| Topbar | `64px`, `85%` + blur, garis bawah | Lengket seperti referensi |
+| Item nav | padding `12px`, radius 12px, gap 12px, ikon 20px | Referensi `px-3 py-3 gap-3` + ikon `size-5` |
 | Item nav **aktif** | **Latar putih penuh**, teks biru `#006dbc` (5.37:1) | Referensi menandai aktif dengan latar putih, bukan garis |
-| Label grup | 12px, uppercase, tracking `0.04em` | Membedakan tingkat hierarki |
-| Kartu | radius 16px, `#161616`, `box-shadow 0 1px 2px` | Referensi memakai `ring-1` + `shadow-sm` |
-| Tombol | radius 12px | Tetap di bawah 18px agar tidak jadi pil (R-11) |
+| Label grup | 11px, uppercase, tracking `0.06em` | Membedakan tingkat hierarki |
+| Kartu | radius 16px, `--rinjan-card`, garis `elevation-150` | Referensi memakai `ring-1` + `shadow-sm` |
+| Tombol | radius 8px, tinggi 36px, teks 14px/500 | Referensi `h-9 rounded-md text-sm` |
 
 ### Deviasi dari referensi: arah gradien
 
@@ -328,16 +332,14 @@ Latar putih item aktif sempat hanya setinggi teks (25px, bukan 40px). Penyebabny
 
 Aturan itu lebih kuat daripada `.nav a.nav__link`, sehingga padding kiri jadi 0. Perbaikannya: selector override harus memakai bentuk `:has()` yang sama. Diverifikasi lewat `CSS.getMatchedStylesForNode`, bukan tebak-tebakan.
 
-### Elemen sidebar yang mudah terlewat
+### Tombol buka/tutup bawaan Payload
 
-Empat elemen memakai warna teks global, bukan warna nav, sehingga tetap gelap di atas biru:
+`.nav-toggler` dan `.hamburger` bukan bagian dari sidebar kita, tetapi ikut memengaruhi tampilan:
 
-| Elemen | Gejala | Perbaikan |
-|---|---|---|
-| `.nav-toggler` (ciutkan nav) | Ikon `#272727` di tema terang | `stroke` dan `color` dipaksa putih |
-| `.hamburger` | **Kotak putih solid** karena `background: var(--theme-bg)`, dan `:focus { outline: none }` | Latar transparan, garis putih 45%, cincin fokus dikembalikan |
-| Ikon logout `.nav__controls` | Ikon `#272727` di tema terang | `stroke` putih |
-| Chevron `.nav-group__indicator` | `#cdcecf` dan `#3a3a3a`, nyaris tak terlihat | `stroke` putih |
+| Keadaan | Perlakuan |
+|---|---|
+| Sidebar penuh/rail | `.nav-toggler--is-open { display: none }` supaya tidak ada dua tombol |
+| Sidebar tertutup (layar <1440px) | chip muncul sebagai hamburger; batasnya memakai token kontrol 3.85:1 (terang) / 4.52:1 (gelap) |
 
 Semua ini lolos dari pemeriksaan otomatis pertama dan hanya ketahuan dari screenshot. Karena itu verifikasi visual tetap wajib, bukan cukup assertion.
 
@@ -402,27 +404,30 @@ Perilaku keyboard tidak ditulis dari nol. Semuanya memakai kode Payload:
 |---|---|---|
 | Deteksi item aktif dobel | 9 rute, hitung `.rinjan-nav__link--active` | tepat 1 per halaman, 0 di dashboard |
 | Tab masuk menu tersembunyi | 20 langkah Tab di viewport 900px | **0/20** masuk; `.focus()` paksa juga ditolak |
-| Dua tombol tutup terlihat | hitung kontrol yang `checkVisibility()` | 1 saat terbuka, 1 saat tertutup |
+| Dua tombol tutup terlihat | hitung kontrol yang `checkVisibility()` | 1 di setiap keadaan |
+| Rail tidak menggeser konten | ukur lebar nav + posisi area kerja | 208 -> 80px, area kerja ikut bergeser |
+| Rail hilang setelah muat ulang | klik, reload, ukur lebar | tetap 80px (localStorage) |
 | Sidebar tertutup tanpa jalan kembali | klik mouse sungguhan di chip hamburger | terbuka kembali |
 
 ### Satu kontrol buka/tutup
 
-Payload sudah merender tombol buka/tutup sendiri: chip kecil di pojok kiri atas template, di luar `<aside>`. Komponen kita juga punya tombol di kotak identitas. Dua-duanya sempat tampil bersamaan.
+Payload sudah merender tombol buka/tutup sendiri: chip kecil di pojok kiri atas template, di luar `<aside>`. Komponen kita punya tombol di kotak identitas. Dua-duanya sempat tampil bersamaan.
 
 Aturannya sekarang:
 
 | Keadaan | Yang terlihat |
 |---|---|
-| Sidebar terbuka | tombol `Sembunyikan menu` di kotak identitas; chip Payload `display: none` |
-| Sidebar tertutup | chip Payload berubah jadi ikon hamburger; tombol kita ikut hilang bersama sidebar |
+| Layar >= 1440px | tombol kita mengecilkan sidebar jadi rail 80px (tidak menutupnya); chip Payload `display: none` |
+| Layar < 1440px, sidebar terbuka | tombol kita menutup sidebar; chip Payload `display: none` |
+| Layar < 1440px, sidebar tertutup | chip Payload menjadi ikon hamburger, satu-satunya jalan membuka |
 
-Chip disembunyikan lewat kelas yang sudah disediakan Payload sendiri, bukan `:has()`:
+Chip disembunyikan lewat kelas yang sudah disediakan Payload sendiri:
 
 ```css
 .nav-toggler--is-open { display: none; }
 ```
 
-Nama kelas itu berarti "nav sedang terbuka", jadi chip otomatis muncul lagi begitu sidebar ditutup. Karena chip ikut terklik, sidebar tidak bisa terkunci dalam keadaan tertutup, dan muat ulang selalu mengembalikannya terbuka (perilaku `NavProvider` Payload di layar lebar).
+Nama kelas itu berarti "nav sedang terbuka", jadi chip otomatis muncul lagi begitu sidebar ditutup. Karena chip ikut terklik, sidebar tidak bisa terkunci dalam keadaan tertutup.
 
 Batas chip juga dinaikkan ke token kontrol (`#808285` = 3.85:1) karena garis bawaan `elevation-150` hanya 1.36:1 di tema terang.
 
@@ -449,7 +454,84 @@ Referensi menaruh ikon di dalam kotak berwarna dan memakai daftar menu statis (H
 
 ---
 
-## 13. Batasan yang Diketahui
+## 13. Penyelarasan dengan Template Referensi
+
+Folder referensi ada di `referensi-desain-admin/smart-home-v1` (tidak ikut di-commit). Angka diambil dari `app/globals.css` dan komponennya, lalu diterjemahkan ke token Payload.
+
+### Tiga permukaan, bukan satu
+
+Referensi memakai tiga tingkat permukaan. Payload secara bawaan memakai satu warna untuk panel dan kartu, sehingga semuanya melebur.
+
+| Peran | Tema terang | Tema gelap | Token |
+|---|---|---|---|
+| Panel kerja | `#f1f2f4` | `#262626` | `--rinjan-panel` |
+| Kartu | `#ffffff` | `#161616` | `--rinjan-card` |
+| Chip di dalam kartu | `#e7e9ea` | `#2e2e2e` | `--rinjan-chip` |
+
+Perhatikan urutannya dibalik di tema gelap: panel **lebih terang** dari kartu. Itu yang membuat kartu terbaca sebagai objek, dan itu juga yang dipakai referensi.
+
+### Shell
+
+| Properti | Nilai | Catatan |
+|---|---|---|
+| Tinggi | `95vh` | referensi `h-[95vh]` |
+| `min-height` | `0` | Payload memasang `min-height: 100vh`; tanpa ini shell melewati bawah jendela dan radius bawahnya terpotong |
+| Jarak dari jendela | `24px 16px` | referensi `sm:py-6 sm:px-4` |
+| Radius + garis | `24px` + `inset 0 0 0 1px` | `rounded-3xl ring-1 ring-border` |
+| Topbar | `64px`, sticky, `85%` + blur | referensi `h-16 bg-background/80 backdrop-blur` |
+| Gutter | `32px` | `--gutter-h`, sebelumnya 60px |
+
+### Sidebar: rail, bukan hilang
+
+Referensi mengecilkan sidebar ke `w-20` (80px) dan menyembunyikan label, bukan menutupnya. Payload bawaan menutup seluruh sidebar.
+
+| Keadaan | Lebar | Isi |
+|---|---|---|
+| Penuh | `208px` (`w-52`) | mark, nama, tombol ciutkan, ikon + label |
+| Rail | `80px` | mark, tombol lebarkan, ikon saja |
+
+Tiga jebakan yang harus ditangani bersamaan:
+
+1. **Kolom grid.** `.template-default` memakai `display: grid` dengan `grid-template-columns: var(--nav-width) 1fr`. Menyusutkan `.nav` saja menyisakan pita kosong 128px. Variabelnya ikut diturunkan: `.template-default:has(.rinjan-nav--collapsed) { --nav-width: 80px }`.
+2. **Tinggi nav.** Payload memasang `height: 100vh` pada `.nav`, lebih tinggi dari shell `95vh`. Diganti `height: 100%`.
+3. **Padding scroll.** `.nav__scroll` membawa `padding: 40px 20px`; 40px itu memakan lebar sidebar sehingga nama brand terpotong. Padding dipindah ke tiap bagian.
+
+Rail disimpan di `localStorage` (`rinjan-nav-collapsed`), sama seperti referensi menyimpan `sidebar-open`.
+
+### Halaman daftar
+
+| Elemen | Sebelum | Sesudah |
+|---|---|---|
+| Wadah | tanpa kartu, langsung di panel | kartu `#161616`, radius 16, garis, margin 24 |
+| Judul | 32px / 500 | 24px / 600 |
+| Create New | pil abu 24px / radius 12 | tombol aksi 36px / radius 8 |
+| Pencarian | input tanpa batas, ikon di luarnya | pil 40px, ikon di dalam, lebar maks 420 |
+| Header tabel | 13px normal | 11px / 600 / kapital, `#9e9fa0` |
+| Baris | belang `elevation-50` | garis pemisah; belang dihapus (di tema terang terlihat sebagai garis-garis) |
+
+Ikon pencarian Payload adalah kolom grid **di luar** input, jadi ikon tampak melayang di kiri pil. Ikon dikeluarkan dari alur (`position: absolute`) dan ditempelkan di dalam pil.
+
+### Kontras pasangan baru
+
+| Pasangan | Rasio |
+|---|---|
+| Header tabel `#9e9fa0` di kartu `#161616` | 6.83:1 |
+| Teks `#ffffff` di panel `#262626` | 15.13:1 |
+| Tombol aksi `#171717` di `#fafafa` | 17.18:1 |
+| Teks hero `#e8f4fd` di `#006dbc` | 4.80:1 |
+| Placeholder `#9e9fa0` di `#0a0a0a` | 7.47:1 |
+
+### Deviasi yang disengaja
+
+| Referensi | Kita | Alasan |
+|---|---|---|
+| Pencarian di topbar | pencarian per koleksi di halaman daftar | pencarian global butuh endpoint lintas koleksi; belum dibuat |
+| Sidebar tanpa label grup | label grup `KONTEN`/`PENJUALAN`/`PENGATURAN` | struktur menu mengikuti koleksi Payload, label membantu orientasi |
+| Kartu berisi data contoh (kamar, suhu, perangkat) | hanya data nyata dari database | konten karangan dilarang |
+
+---
+
+## 14. Batasan yang Diketahui
 | Batasan | Sebab | Dampak |
 |---|---|---|
 | `--theme-success-500` tidak bisa dipakai untuk teks di mode gelap | Tidak ada di tabel flip Payload | Harus memakai `--theme-success-600` |

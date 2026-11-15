@@ -5,11 +5,16 @@
    ada di `payload-default`, jadi file ini menulis ke layer `payload` supaya
    menang tanpa perlu `!important`.
 
-   Peran warna (maksimal 3 inti + 1 aksen):
+   Peran warna (mengikuti referensi):
      biru   #3171B3 -> identitas dan interaktif: fokus, nav aktif, selection, status
-     oranye #D93A00 -> HANYA aksi utama: Publish, Simpan, Login
+     monokrom       -> tombol aksi: hampir putih di tema gelap, hampir hitam di
+                       tema terang (lihat --rinjan-action-*). Referensi memakai
+                       --primary monokrom, bukan warna brand, untuk tombol.
      netral         -> permukaan dan teks
      merah/amber    -> error dan warning, sengaja TIDAK disentuh (semantik)
+
+   Oranye brand (#D93A00) tetap dipakai di situs publik sebagai warna aksi,
+   tetapi tidak dipakai di panel admin.
 
    Semua rasio kontras di bawah diukur lewat `.verify/admin-ramp.mjs`, bukan
    diperkirakan. Ringkasan hasil ada di `doc/design-admin.md`.
@@ -77,9 +82,6 @@
 
     /* Token brand yang dipakai langsung di bawah */
     --rinjan-blue: #3171b3;
-    --rinjan-orange: #d93a00;
-    --rinjan-orange-hover: #b83000;
-    --rinjan-orange-active: #a02a00;
 
     /* Font brand. Poppins dimuat lewat next/font di layout panel admin. */
     --font-body: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
@@ -126,6 +128,26 @@
     --rinjan-surface: #161616;
     --rinjan-border: #292929;
     --rinjan-accent: #0099eb;
+
+    /* Tiga permukaan, seperti referensi: panel kerja (muted), kartu, dan chip
+       kecil di dalam kartu. Urutan terang: panel paling gelap, kartu paling
+       terang. Urutan gelap dibalik oleh referensi: panel #262626 justru lebih
+       terang dari kartu #161616, dan itulah yang membuat kartu terbaca
+       sebagai objek di atas panel. Sebelum ini panel dan kartu sama-sama
+       #161616 sehingga semuanya melebur. */
+    --rinjan-panel: var(--color-base-50);
+    --rinjan-card: var(--color-base-0);
+    --rinjan-chip: var(--color-base-100);
+    --rinjan-chip-hover: var(--color-base-150);
+
+    /* Tombol utama mengikuti referensi: monokrom, bukan warna brand. Referensi
+       memakai --primary (hampir putih di mode gelap, hampir hitam di mode
+       terang) dan menyimpan warna brand hanya untuk identitas dan interaktif.
+       Teks di atasnya tetap lolos AA dengan margin besar (17.6:1). */
+    --rinjan-action-bg: #171717;
+    --rinjan-action-text: #fafafa;
+    --rinjan-action-hover: #333333;
+    --rinjan-action-active: #000000;
   }
 
   /* Elevation gelap di-override eksplisit, tidak sekadar dibalik seperti
@@ -161,6 +183,16 @@
        #858585 = 3.58:1, dan tetap 4.52:1 bila latarnya #1e1e1e. */
     --rinjan-control-border: #858585;
     --rinjan-control-border-hover: #9e9fa0;
+
+    --rinjan-panel: #262626;
+    --rinjan-card: var(--rinjan-surface);
+    --rinjan-chip: #2e2e2e;
+    --rinjan-chip-hover: #3a3a3a;
+
+    --rinjan-action-bg: #fafafa;
+    --rinjan-action-text: #171717;
+    --rinjan-action-hover: #e5e5e5;
+    --rinjan-action-active: #d4d4d4;
   }
 
   /* --- Affordance kursor (R-39) ------------------------------------------ */
@@ -184,20 +216,26 @@
     color: var(--theme-elevation-1000);
   }
 
-  /* --- Tombol utama: oranye brand -----------------------------------------
-     Putih di #D93A00 = 4.61:1 (AA). Oranye asli #EB4101 hanya 3.97:1,
-     jadi tidak dipakai untuk tombol solid. */
+  /* --- Tombol -------------------------------------------------------------
+     Referensi memakai tombol monokrom: hampir putih di tema gelap, hampir
+     hitam di tema terang, dengan teks berlawanan. Warna brand hanya untuk
+     identitas dan elemen interaktif, tidak untuk tombol aksi (lihat
+     --rinjan-action-*). Ukuran mengikuti referensi: tinggi 36px, radius 8px,
+     teks 14px medium. */
+  .btn {
+    border-radius: 8px;
+    font-weight: 500;
+  }
+
   .btn--style-primary {
-    --bg-color: var(--rinjan-orange);
-    --color: #ffffff;
-    --hover-bg: var(--rinjan-orange-hover);
-    --hover-color: #ffffff;
-    border-radius: 6px;
-    font-weight: 600;
+    --bg-color: var(--rinjan-action-bg);
+    --color: var(--rinjan-action-text);
+    --hover-bg: var(--rinjan-action-hover);
+    --hover-color: var(--rinjan-action-text);
   }
 
   .btn--style-primary:active {
-    background-color: var(--rinjan-orange-active);
+    background-color: var(--rinjan-action-active);
   }
 
   .btn--style-primary.btn--disabled {
@@ -207,22 +245,42 @@
     --hover-color: var(--theme-elevation-500);
   }
 
-  /* Tombol sekunder: garis biru brand, bukan abu-abu */
   .btn--style-secondary {
-    --btn-border: 1px solid var(--theme-success-600);
-    --color: var(--theme-success-700);
-    --hover-btn-border: 1px solid var(--theme-success-700);
-    --hover-color: var(--theme-success-800);
-    border-radius: 6px;
+    --btn-border: 1px solid var(--theme-elevation-200);
+    --color: var(--theme-text);
+    --hover-btn-border: 1px solid var(--theme-elevation-300);
+    --hover-bg: var(--theme-elevation-100);
+    --hover-color: var(--theme-text);
   }
 
-  html[data-theme='dark'] .btn--style-secondary {
-    /* --theme-success-500 TIDAK ada di tabel flip Payload (tabelnya melompat
-       dari 450 ke 550), jadi nilainya tetap #387cc2 dan hanya mencapai
-       4.20:1 di kanvas gelap. --theme-success-600 di mode gelap berubah jadi
-       --color-success-400 (#6398cf) yang mencapai 6.02:1. */
-    --color: var(--theme-success-600);
-    --hover-color: var(--theme-success-300);
+  /* CTA "Create New" di header daftar: tombol utama, bukan pil abu-abu. */
+  .list-create-new-doc__create-new-button {
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: var(--rinjan-action-bg);
+    color: var(--rinjan-action-text);
+  }
+
+  .list-create-new-doc__create-new-button:hover {
+    background-color: var(--rinjan-action-hover);
+    color: var(--rinjan-action-text);
+  }
+
+  /* Pil kecil (Columns, Filters, jumlah per halaman): chip bulat. */
+  .pill {
+    border-radius: 999px;
+  }
+
+  .pill--style-light {
+    background-color: var(--rinjan-chip);
+    color: var(--theme-text);
+  }
+
+  .pill--style-light:hover {
+    background-color: var(--rinjan-chip-hover);
   }
 
   /* --- Kontrol form -------------------------------------------------------
@@ -244,6 +302,13 @@
   .react-select:not(.error) .rs__control,
   .react-select:not(.error) .rs__control:hover {
     border-color: var(--rinjan-control-border);
+  }
+
+  /* Radius 8px seperti input referensi, bukan 3px bawaan Payload. */
+  .field-type :where(input, textarea),
+  .react-select .rs__control,
+  .search-filter__input {
+    border-radius: 8px;
   }
 
   .field-type:not(.error) :where(input, textarea):not(:disabled):hover,
@@ -269,23 +334,44 @@
      dari tepi jendela, dan area kerja memakai latar muted yang berbeda dari
      kartu. Bawaan Payload menempelkan semuanya ke tepi. */
   .template-default {
-    margin: 20px 16px;
-    height: calc(100vh - 40px);
+    --app-header-height: 64px;
+    --gutter-h: 32px;
+    --nav-width: 208px;
+
+    margin: 24px 16px;
+    height: 95vh;
+    /* Payload memasang min-height: 100vh pada .template-default. Tanpa ini,
+       margin 24px membuat shell melewati bawah jendela dan bayangan/radius
+       bawahnya terpotong. */
+    min-height: 0;
     border-radius: 24px;
     overflow: hidden;
-    background-color: var(--theme-elevation-0);
+    background-color: var(--rinjan-card);
+    box-shadow:
+      inset 0 0 0 1px var(--theme-elevation-150),
+      0 1px 2px rgb(0 0 0 / 20%);
   }
 
+  html[data-theme='dark'] .template-default {
+    box-shadow:
+      inset 0 0 0 1px var(--theme-elevation-150),
+      0 1px 2px rgb(0 0 0 / 40%);
+  }
+
+  /* Panel kerja: lebih gelap dari kartu di tema terang, lebih terang dari
+     kartu di tema gelap. Inilah yang membuat kartu terbaca sebagai objek. */
   .template-default__wrap {
-    background-color: var(--theme-elevation-50);
+    background-color: var(--rinjan-panel);
     border-top-right-radius: 24px;
     border-bottom-right-radius: 24px;
     overflow: hidden;
   }
 
-  /* Topbar lengket seperti referensi: latar permukaan + garis bawah tipis. */
+  /* Topbar lengket seperti referensi: setengah transparan + blur, garis bawah
+     tipis, tinggi 64px. */
   .app-header {
-    background-color: var(--theme-elevation-0);
+    background-color: color-mix(in srgb, var(--theme-elevation-0) 85%, transparent);
+    backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--theme-elevation-150);
   }
 
@@ -299,6 +385,7 @@
         gagal ambang 3:1 untuk indikator non-teks.
      3. Ikon memakai currentColor, sehingga otomatis ikut biru saat item aktif. */
   .nav {
+    height: 100%;
     background: linear-gradient(
       to bottom,
       var(--rinjan-nav-bg),
@@ -331,11 +418,18 @@
     box-shadow: 0 0 0 1px var(--rinjan-control-border-hover);
   }
 
+  /* Payload memberi .nav__scroll padding 40px 20px, yang memakan 40px lebar
+     sidebar. Padding itu dipindah ke tiap bagian (brand, list, controls) supaya
+     nama brand muat di lebar 208px tanpa terpotong. */
+  .rinjan-nav .nav__scroll {
+    padding: 0;
+  }
+
   .rinjan-nav__brand {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 18px 16px 14px;
+    gap: 8px;
+    padding: 18px 14px 14px;
     color: var(--rinjan-nav-text);
   }
 
@@ -352,10 +446,13 @@
   }
 
   .rinjan-nav__brand-name {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     flex-grow: 1;
+    min-width: 0;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .rinjan-nav__collapse {
@@ -397,22 +494,31 @@
   .rinjan-nav__list {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 4px;
     margin: 0;
-    padding: 0 10px;
+    padding: 0 12px;
     list-style: none;
   }
 
   .rinjan-nav__link {
     display: flex;
     align-items: center;
-    gap: 11px;
-    padding: 10px 12px;
+    gap: 12px;
+    padding: 12px;
     border-radius: 12px;
     color: var(--rinjan-nav-text);
     text-decoration: none;
     font-size: 14px;
     line-height: 20px;
+  }
+
+  /* Label panjang (mis. "Pengaturan Situs") dipotong, bukan dibungkus dua
+     baris, supaya tinggi tiap item tetap sama. */
+  .nav__link-label {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .rinjan-nav__link:hover {
@@ -425,11 +531,71 @@
     outline-offset: 2px;
   }
 
-  /* Ikon mengikuti warna teks, jadi otomatis biru saat item aktif. */
+  /* Ikon mengikuti warna teks, jadi otomatis biru saat item aktif. Ukuran 20px
+     sama dengan ikon lucide size-5 di referensi. */
   .rinjan-nav__icon {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     flex-shrink: 0;
+  }
+
+  /* --- Sidebar rail (layar >= 1440px) -------------------------------------
+     Referensi tidak menyembunyikan sidebar saat diciutkan; lebarnya turun ke
+     80px dan label hilang, ikon tetap ada. Payload bawaan menyembunyikan
+     seluruh sidebar, dan itulah yang membuat navigasi terasa "hilang".
+     Di bawah 1440px sidebar tetap modal buka/tutup seperti bawaan Payload. */
+  @media (min-width: 1440px) {
+    /* Shell memakai grid dengan kolom pertama = --nav-width. Menyusutkan
+       elemen .nav saja tidak cukup: kolomnya tetap 208px dan menyisakan pita
+       kosong 128px. Jadi variabelnya ikut diturunkan lewat :has(). */
+    .template-default {
+      transition: grid-template-columns 0.25s ease;
+    }
+
+    .template-default:has(.rinjan-nav--collapsed) {
+      --nav-width: 80px;
+    }
+
+    .nav.rinjan-nav {
+      transition: width 0.25s ease;
+    }
+
+    .nav.rinjan-nav--collapsed {
+      width: 80px;
+    }
+
+    .rinjan-nav--collapsed .rinjan-nav__brand {
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px 0 14px;
+    }
+
+    .rinjan-nav--collapsed .rinjan-nav__brand-name,
+    .rinjan-nav--collapsed .rinjan-nav__group-label {
+      display: none;
+    }
+
+    .rinjan-nav--collapsed .rinjan-nav__list {
+      padding: 0 12px;
+    }
+
+    .rinjan-nav--collapsed .rinjan-nav__link {
+      justify-content: center;
+      padding: 12px 0;
+    }
+
+    .rinjan-nav--collapsed .nav__link-label {
+      display: none;
+    }
+
+    .rinjan-nav--collapsed .rinjan-nav__controls {
+      align-items: center;
+      padding: 12px 0 18px;
+    }
+
+    .rinjan-nav--collapsed .rinjan-nav__group {
+      margin-bottom: 10px;
+    }
   }
 
   /* Item aktif: pil putih penuh, teks dan ikon biru. */
@@ -504,20 +670,33 @@
   }
 
   .rinjan-stats__head {
-    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+    padding: 28px;
+    border-radius: 24px;
+    background: linear-gradient(
+      to bottom,
+      var(--rinjan-nav-bg),
+      var(--rinjan-nav-bg-end)
+    );
   }
 
   .rinjan-stats__title {
-    margin: 0 0 6px;
-    font-size: 28px;
+    margin: 0 0 8px;
+    font-size: 30px;
     font-weight: 600;
-    color: var(--theme-elevation-1000);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--rinjan-nav-text);
   }
 
   .rinjan-stats__sub {
     margin: 0;
+    max-width: 60ch;
     font-size: 14px;
-    color: var(--theme-elevation-500);
+    line-height: 1.6;
+    color: var(--rinjan-nav-text-muted);
   }
 
   .rinjan-stats__grid {
@@ -548,7 +727,7 @@
     height: 100%;
     padding: 20px;
     border-radius: 16px;
-    background-color: var(--theme-elevation-0);
+    background-color: var(--rinjan-card);
     border: 1px solid var(--theme-elevation-150);
     text-decoration: none;
     transition: border-color 0.15s ease, background-color 0.15s ease;
@@ -556,7 +735,7 @@
 
   .rinjan-stat:hover {
     border-color: var(--rinjan-accent);
-    background-color: var(--theme-elevation-50);
+    background-color: var(--theme-elevation-100);
   }
 
   .rinjan-stat:focus-visible {
@@ -611,6 +790,123 @@
     object-fit: contain;
   }
 
+  /* --- Halaman daftar koleksi ---------------------------------------------
+     Referensi membungkus isi halaman dalam satu kartu: judul 30px, aksi utama
+     di kanan, pencarian berbentuk pil, lalu tabel dengan garis pemisah antar
+     baris. Payload menyebar semuanya langsung di atas panel tanpa wadah. */
+  .collection-list {
+    margin: 24px 24px 32px;
+    padding-block: 24px 16px;
+    background-color: var(--rinjan-card);
+    border: 1px solid var(--theme-elevation-150);
+    border-radius: 16px;
+  }
+
+  .list-header__title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+
+  /* Judul di kiri, aksi di kanan seperti header halaman referensi. */
+  .list-header__title-and-actions {
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .list-controls {
+    margin-top: 20px;
+  }
+
+  /* Pencarian berbentuk pil (rounded-full), bukan kotak tanpa batas.
+     Payload menaruh ikon kaca pembesar sebagai kolom grid DI LUAR input,
+     sehingga ikon tampak melayang di kiri pil. Ikon dikeluarkan dari alur dan
+     ditempel di dalam pil. */
+  .search-bar {
+    position: relative;
+    display: block;
+    min-height: 40px;
+    background-color: transparent;
+    border-radius: 0;
+  }
+
+  .search-bar .icon--search {
+    position: absolute;
+    top: 20px;
+    left: 14px;
+    width: 18px;
+    height: 18px;
+    transform: translateY(-50%);
+    color: var(--theme-elevation-500);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .search-bar__actions {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    display: flex;
+    gap: 8px;
+    transform: translateY(-50%);
+  }
+
+  .search-filter {
+    max-width: 420px;
+    width: 100%;
+  }
+
+  .search-filter__input {
+    width: 100%;
+    height: 40px;
+    padding: 0 16px 0 40px;
+    font-size: 14px;
+    border-radius: 999px;
+    border: 1px solid var(--rinjan-control-border);
+    background-color: var(--theme-elevation-0);
+  }
+
+  .search-filter__input:hover {
+    border-color: var(--rinjan-control-border-hover);
+  }
+
+  .search-filter__input:focus-visible {
+    outline: var(--accessibility-outline);
+    outline-offset: var(--accessibility-outline-offset);
+  }
+
+  /* Header tabel kecil dan huruf kapital, baris dipisah garis tipis. */
+  .table thead th {
+    padding: 12px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--theme-elevation-400);
+  }
+
+  .table tbody td {
+    padding: 12px 16px;
+    font-size: 14px;
+    border-top: 1px solid var(--theme-elevation-150);
+    background-color: transparent;
+  }
+
+  /* Payload mewarnai baris ganjil dengan elevation-50. Di tema gelap warna itu
+     sama dengan permukaan kartu sehingga tak terlihat, tetapi di tema terang
+     jadi belang. Garis pemisah saja sudah cukup. */
+  .table tbody tr:nth-child(odd),
+  .table tbody tr:nth-child(odd) td {
+    background-color: transparent;
+  }
+
+  .table tbody tr:hover td {
+    background-color: var(--rinjan-chip);
+  }
+
   /* --- Kartu --------------------------------------------------------------
      Referensi memakai kartu besar dengan radius lega dan permukaan lebih
      terang dari kanvas. Kartu koleksi bawaan Payload memakai --cols: 5
@@ -618,14 +914,13 @@
      pintasan, bukan tabel. */
   .card {
     border-radius: 16px;
-    background-color: var(--rinjan-surface);
-    border-color: var(--rinjan-border);
+    background-color: var(--rinjan-card);
+    border-color: var(--theme-elevation-150);
     box-shadow: 0 1px 2px rgb(0 0 0 / 24%);
   }
 
   html[data-theme='light'] .card {
-    background-color: var(--theme-elevation-50);
-    border-color: var(--theme-elevation-150);
+    background-color: var(--rinjan-card);
   }
 
   .collections__card-list {
@@ -641,12 +936,6 @@
   .card__actions .btn__icon:hover {
     border-color: var(--theme-success-500);
     color: var(--theme-success-700);
-  }
-
-  /* Tombol: radius lega mengikuti kartu, tetap di bawah 18px supaya tidak jadi
-     pil (R-11). */
-  .btn {
-    border-radius: 12px;
   }
 
   /* --- Halaman login -------------------------------------------------------
@@ -678,6 +967,9 @@
 
   /* --- Dashboard ---------------------------------------------------------- */
   .collections__label {
-    color: var(--theme-elevation-800);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--theme-elevation-1000);
   }
 }

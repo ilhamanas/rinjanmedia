@@ -3,7 +3,7 @@
 import { Link, useNav } from '@payloadcms/ui'
 import { EntityType } from '@payloadcms/ui/shared'
 import { usePathname } from 'next/navigation'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 /**
  * Bagian client dari navigasi admin.
@@ -84,12 +84,51 @@ export function NavShellClient({
   const { hydrated, navOpen, navRef, setNavOpen, shouldAnimate } = useNav()
   const pathname = usePathname() ?? ''
 
+  // Rai tanpa label, seperti sidebar referensi (w-20). Hanya berlaku di layar
+  // lebar; di layar kecil sidebar tetap modal yang dibuka/tutup penuh.
+  //
+  // Sengaja tidak memakai useWindowInfo: hook itu butuh provider yang tidak
+  // tersedia saat Nav dirender di server, dan render server langsung gagal
+  // ("Cannot read properties of undefined (reading 'l')").
+  const [collapsed, setCollapsed] = useState(false)
+  const [isLarge, setIsLarge] = useState(false)
+
+  useEffect(() => {
+    const query = window.matchMedia('(min-width: 1440px)')
+    const update = () => setIsLarge(query.matches)
+
+    query.addEventListener('change', update)
+
+    // Dibaca setelah frame pertama: setState langsung di badan effect
+    // dilarang oleh aturan react-hooks/set-state-in-effect dan memicu render
+    // berantai. Nilai awal (penuh) sama dengan render server, jadi tidak ada
+    // ketidakcocokan hidrasi.
+    const frame = window.requestAnimationFrame(() => {
+      update()
+      setCollapsed(window.localStorage.getItem('rinjan-nav-collapsed') === '1')
+    })
+
+    return () => {
+      window.cancelAnimationFrame(frame)
+      query.removeEventListener('change', update)
+    }
+  }, [])
+
+  const toggleCollapsed = () => {
+    const next = !collapsed
+    setCollapsed(next)
+    // Ditulis saat aksi user, bukan di effect: effect yang menulis nilai awal
+    // akan menimpa nilai tersimpan sebelum sempat dibaca.
+    window.localStorage.setItem('rinjan-nav-collapsed', next ? '1' : '0')
+  }
+
   const className = [
     'nav',
     navOpen && 'nav--nav-open',
     shouldAnimate && 'nav--nav-animate',
     hydrated && 'nav--nav-hydrated',
     'rinjan-nav',
+    collapsed && 'rinjan-nav--collapsed',
   ]
     .filter(Boolean)
     .join(' ')
@@ -105,9 +144,11 @@ export function NavShellClient({
           </span>
           <span className="rinjan-nav__brand-name">{siteName}</span>
           <button
-            aria-label="Sembunyikan menu"
+            aria-label={
+              isLarge ? (collapsed ? 'Lebarkan menu' : 'Ciutkan menu') : 'Sembunyikan menu'
+            }
             className="rinjan-nav__collapse"
-            onClick={() => setNavOpen(false)}
+            onClick={() => (isLarge ? toggleCollapsed() : setNavOpen(false))}
             tabIndex={navOpen ? 0 : -1}
             type="button"
           >
@@ -122,7 +163,7 @@ export function NavShellClient({
               viewBox="0 0 24 24"
               width="16"
             >
-              <path d="M15 6l-6 6 6 6" />
+              <path d={collapsed ? 'M9 6l6 6-6 6' : 'M15 6l-6 6 6 6'} />
             </svg>
           </button>
         </div>
