@@ -439,10 +439,18 @@
     width: 36px;
     height: 36px;
     border-radius: 12px;
-    background-color: rgb(255 255 255 / 20%);
-    font-weight: 700;
-    font-size: 15px;
+    background-color: #ffffff;
     flex-shrink: 0;
+  }
+
+  /* Mark logo Rinjan (public/icon-rinjan.png, 63x61). Ukuran intrinsik ditulis
+     di atribut supaya tidak ada pergeseran saat gambar dimuat (R-40).
+     Latar chip putih, bukan putih transparan: logo berwarna di atas biru
+     dengan alas transparan terbaca kotor. */
+  .rinjan-nav__brand-mark img {
+    display: block;
+    width: 26px;
+    height: 25px;
   }
 
   .rinjan-nav__brand-name {

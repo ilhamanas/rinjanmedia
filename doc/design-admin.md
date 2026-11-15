@@ -206,6 +206,9 @@ State error dan disabled tetap milik Payload. Selector memakai `.field-type:not(
 |---|---|---|
 | Logo login | `public/logo-rinjan.png` (terang), `public/logo-rinjan-dark.png` (gelap) | 297×61, alpha |
 | Ikon breadcrumb | `public/icon-rinjan.png` | mark saja, 63×61 |
+| Mark sidebar | `public/icon-rinjan.png` | 26×25 di dalam chip putih 36px |
+
+Mark sidebar memakai latar chip **putih solid**, bukan putih transparan seperti versi awal. Logo berwarna di atas gradien biru dengan alas transparan terbaca kotor dan tenggelam; alas putih membuat bentuk logo utuh. Ukuran gambar 26×25 supaya mengisi chip 36px tanpa menyentuh sudut.
 
 Wordmark di logo resmi berwarna **hitam pekat** dan tidak terbaca di permukaan gelap. `logo-rinjan-dark.png` adalah turunan yang sama persis: **hanya** piksel wordmark hitam yang dijadikan putih (3331 piksel), bagian mark berwarna tidak diubah.
 

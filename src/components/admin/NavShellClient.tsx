@@ -140,7 +140,7 @@ export function NavShellClient({
 
         <div className="rinjan-nav__brand">
           <span aria-hidden="true" className="rinjan-nav__brand-mark">
-            R
+            <img alt="" height={22} src="/icon-rinjan.png" width={23} />
           </span>
           <span className="rinjan-nav__brand-name">{siteName}</span>
           <button
