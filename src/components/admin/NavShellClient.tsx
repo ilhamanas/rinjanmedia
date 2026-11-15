@@ -65,7 +65,7 @@ export function NavShellClient({
   beforeNav,
   beforeNavLinks,
   groups,
-  logout,
+  logoutHref,
   navPreferences,
   settingsMenu,
   siteName,
@@ -76,7 +76,7 @@ export function NavShellClient({
   beforeNav: React.ReactNode
   beforeNavLinks: React.ReactNode
   groups: NavGroupData[]
-  logout: React.ReactNode
+  logoutHref: string
   navPreferences: { groups?: Record<string, { open?: boolean }> } | null
   settingsMenu: React.ReactNode[]
   siteName: string
@@ -216,7 +216,34 @@ export function NavShellClient({
 
           <div className="nav__controls rinjan-nav__controls">
             {settingsMenu}
-            {logout}
+            {/* Bawaan Payload hanya ikon tanpa label. Label ditulis sendiri
+                supaya jelas apa yang terjadi sebelum diklik. Ikonnya disalin
+                dari LogOutIcon Payload agar bentuknya tetap sama. */}
+            <a
+              aria-label="Keluar"
+              className="nav__log-out rinjan-nav__logout"
+              href={logoutHref}
+              tabIndex={navOpen ? 0 : -1}
+              title="Keluar"
+            >
+              <svg
+                aria-hidden="true"
+                className="rinjan-nav__icon"
+                fill="none"
+                height="20"
+                stroke="currentColor"
+                strokeWidth={1.6}
+                viewBox="0 0 20 20"
+                width="20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 16H14.6667C15.0203 16 15.3594 15.8595 15.6095 15.6095C15.8595 15.3594 16 15.0203 16 14.6667V5.33333C16 4.97971 15.8595 4.64057 15.6095 4.39052C15.3594 4.14048 15.0203 4 14.6667 4H12M7.33333 13.3333L4 10M4 10L7.33333 6.66667M4 10H12"
+                  strokeLinecap="square"
+                />
+              </svg>
+              <span className="nav__link-label">Keluar</span>
+            </a>
           </div>
         </nav>
 

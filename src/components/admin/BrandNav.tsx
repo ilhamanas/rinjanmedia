@@ -1,4 +1,3 @@
-import { Logout } from '@payloadcms/ui'
 import { RenderServerComponent } from '@payloadcms/ui/elements/RenderServerComponent'
 import { EntityType, groupNavItems, type EntityToGroup } from '@payloadcms/ui/shared'
 import React from 'react'
@@ -41,7 +40,7 @@ export async function BrandNav(props: BrandNavProps) {
 
   const { admin, collections, globals, routes } = payload.config
   const adminRoute = routes.admin
-  const { afterNav, afterNavLinks, beforeNav, beforeNavLinks, logout, settingsMenu } =
+  const { afterNav, afterNavLinks, beforeNav, beforeNavLinks, settingsMenu } =
     admin.components
 
   const visibleCollections = visibleEntities?.collections ?? collections.map((c) => c.slug)
@@ -101,13 +100,6 @@ export async function BrandNav(props: BrandNavProps) {
       serverProps,
     })
 
-  const LogoutComponent = RenderServerComponent({
-    Component: logout?.Button as never,
-    Fallback: Logout,
-    importMap: payload.importMap,
-    serverProps,
-  })
-
   return (
     <NavShellClient
       adminRoute={adminRoute}
@@ -116,7 +108,7 @@ export async function BrandNav(props: BrandNavProps) {
       beforeNav={render(beforeNav)}
       beforeNavLinks={render(beforeNavLinks)}
       groups={groups}
-      logout={LogoutComponent}
+      logoutHref={`${adminRoute}/logout`}
       navPreferences={navPreferences}
       settingsMenu={Array.isArray(settingsMenu) ? settingsMenu.map(render) : []}
       siteName="Rinjan Media"
