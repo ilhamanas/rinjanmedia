@@ -406,6 +406,7 @@ Perilaku keyboard tidak ditulis dari nol. Semuanya memakai kode Payload:
 | Tab masuk menu tersembunyi | 20 langkah Tab di viewport 900px | **0/20** masuk; `.focus()` paksa juga ditolak |
 | Dua tombol tutup terlihat | hitung kontrol yang `checkVisibility()` | 1 di setiap keadaan |
 | Rail tidak menggeser konten | ukur lebar nav + posisi area kerja | 208 -> 80px, area kerja ikut bergeser |
+| Ikon rail tidak di tengah | ukur pusat ikon vs pusat sidebar | 56px = 56px (sebelumnya 38px, selisih 18px) |
 | Rail hilang setelah muat ulang | klik, reload, ukur lebar | tetap 80px (localStorage) |
 | Sidebar tertutup tanpa jalan kembali | klik mouse sungguhan di chip hamburger | terbuka kembali |
 
@@ -490,11 +491,12 @@ Referensi mengecilkan sidebar ke `w-20` (80px) dan menyembunyikan label, bukan m
 | Penuh | `208px` (`w-52`) | mark, nama, tombol ciutkan, ikon + label |
 | Rail | `80px` | mark, tombol lebarkan, ikon saja |
 
-Tiga jebakan yang harus ditangani bersamaan:
+Empat jebakan yang harus ditangani bersamaan:
 
 1. **Kolom grid.** `.template-default` memakai `display: grid` dengan `grid-template-columns: var(--nav-width) 1fr`. Menyusutkan `.nav` saja menyisakan pita kosong 128px. Variabelnya ikut diturunkan: `.template-default:has(.rinjan-nav--collapsed) { --nav-width: 80px }`.
 2. **Tinggi nav.** Payload memasang `height: 100vh` pada `.nav`, lebih tinggi dari shell `95vh`. Diganti `height: 100%`.
 3. **Padding scroll.** `.nav__scroll` membawa `padding: 40px 20px`; 40px itu memakan lebar sidebar sehingga nama brand terpotong. Padding dipindah ke tiap bagian.
+4. **Lebar isi.** `.nav__wrap` memakai `align-items: flex-start`, jadi tiap grup dan daftar menyusut selebar isinya. Di rail akibatnya semua ikon menempel ke kiri: terukur pusat ikon 38px sementara pusat sidebar 56px, selisih 18px. Ikon baru benar-benar di tengah setelah `.nav__wrap` di-`stretch` dan grup diberi `width: 100%`. Efek sampingnya di sidebar penuh juga benar: pil item aktif kini selebar sidebar, bukan selebar teks.
 
 Rail disimpan di `localStorage` (`rinjan-nav-collapsed`), sama seperti referensi menyimpan `sidebar-open`.
 

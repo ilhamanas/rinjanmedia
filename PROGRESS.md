@@ -300,6 +300,7 @@ Cacat bawaan Payload yang ditemukan dan diperbaiki:
 | 15 Nov 2026 | Sidebar: lebar 208px, rail 80px lewat `:has()` pada variabel `--nav-width` (kolom grid, bukan hanya lebar `.nav`), tinggi `100%` (bukan 100vh), padding `.nav__scroll` dipindah |
 | 15 Nov 2026 | Halaman daftar jadi kartu: judul 24px, CTA monokrom 36px/radius 8, pencarian pil 40px dengan ikon di dalam, header tabel kapital, belang baris dihapus |
 | 15 Nov 2026 | Tombol aksi pindah dari oranye ke monokrom seperti referensi; oranye tetap warna aksi situs publik |
+| 15 Nov 2026 | Ikon rail tidak di tengah: `.nav__wrap` memakai `align-items: flex-start` sehingga daftar menyusut selebar isi. Pusat ikon 38px vs pusat sidebar 56px → diperbaiki dengan `stretch` + grup `width: 100%` |
 
 ---
 

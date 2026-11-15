@@ -477,7 +477,16 @@
     outline-offset: 2px;
   }
 
+  /* Payload memasang `align-items: flex-start` pada .nav__wrap, jadi tiap grup
+     dan daftar menyusut selebar isinya. Akibatnya semua ikon di rail menempel
+     ke kiri (terukur 18px dari tengah), bukan di tengah. Isi dilebarkan dulu
+     supaya centering per item punya ruang penuh. */
+  .rinjan-nav .nav__wrap {
+    align-items: stretch;
+  }
+
   .rinjan-nav__group {
+    width: 100%;
     margin-bottom: 6px;
   }
 
